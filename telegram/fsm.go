@@ -1,0 +1,78 @@
+package telegram
+
+import (
+	"fmt"
+
+	"github.com/looplab/fsm"
+	"github.com/tucnak/telebot"
+)
+
+const (
+	greetCommand         = "greet"
+	returnToStartCommand = "return"
+	unknownCommand       = "unknown"
+
+	foodCommand     = "🌶 Еда"
+	talkCommand     = "🔥 Доклады / МК"
+	funCommand      = "🍾 Развлечения"
+	transferCommand = "🚜 Трансфер"
+
+	welcomeState = "welcome"
+	startState   = "start"
+)
+
+var stateMessageOptions = map[string]*telebot.SendOptions{
+	startState: &telebot.SendOptions{
+		ReplyMarkup: telebot.ReplyMarkup{
+			CustomKeyboard: [][]string{
+				[]string{foodCommand, talkCommand},
+				[]string{funCommand, transferCommand},
+			},
+			ResizeKeyboard: true,
+		},
+	},
+}
+
+func initStateMachine() *fsm.FSM {
+	return fsm.NewFSM(
+		welcomeState,
+
+		fsm.Events{
+			{Name: greetCommand, Src: []string{welcomeState}, Dst: startState},
+			{Name: returnToStartCommand, Src: []string{startState}, Dst: startState},
+			{Name: unknownCommand, Src: []string{startState}, Dst: startState},
+			{Name: foodCommand, Src: []string{startState}, Dst: startState},
+		},
+
+		fsm.Callbacks{
+			greetCommand: func(e *fsm.Event) {
+				if len(e.Args) < 2 {
+					return
+				}
+				chat, bot := e.Args[0].(telebot.Chat), e.Args[1].(*Bot)
+				bot.telebot.SendMessage(chat, "Добро пожаловать на КонфУР!", stateMessageOptions[e.Dst])
+			},
+
+			foodCommand: func(e *fsm.Event) {
+				if len(e.Args) < 2 {
+					return
+				}
+				chat, bot := e.Args[0].(telebot.Chat), e.Args[1].(*Bot)
+				var response string
+				for _, event := range bot.Schedule.GetAllEventsByType("food") {
+					response += fmt.Sprintf("%s — %s: %s\n",
+						event.Start.Format("15:04"), event.Finish.Format("15:04"), event.Short)
+				}
+				bot.telebot.SendMessage(chat, response, stateMessageOptions[e.Dst])
+			},
+
+			unknownCommand: func(e *fsm.Event) {
+				if len(e.Args) < 2 {
+					return
+				}
+				chat, bot := e.Args[0].(telebot.Chat), e.Args[1].(*Bot)
+				bot.telebot.SendMessage(chat, "Я не понимаю эту команду. Давай попробуем еще раз с начала.", stateMessageOptions[e.Dst])
+			},
+		},
+	)
+}

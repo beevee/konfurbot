@@ -1,0 +1,24 @@
+- type: food
+  short: Утренний кофе
+  start: 09:00
+  finish: 10:00
+
+- type: food
+  short: Обед
+  start: 12:00
+  finish: 13:00
+
+- type: food
+  short: Кофе-брейк
+  start: 14:30
+  finish: 15:00
+
+- type: food
+  short: Кофе-брейк
+  start: 16:30
+  finish: 17:00
+
+- type: food
+  short: Ужин
+  start: 19:30
+  finish: 20:00
