@@ -51,7 +51,7 @@ func initStateMachine() *fsm.FSM {
 
 			foodCommand: extractCallbackParams(func(e *fsm.Event, chat telebot.Chat, bot *Bot) {
 				var response string
-				for _, event := range bot.Schedule.Events["food"] {
+				for _, event := range bot.ScheduleStorage.GetEventsByType("food") {
 					response += fmt.Sprintf("%s — %s: %s\n",
 						event.Start.Format("15:04"), event.Finish.Format("15:04"), event.Short)
 				}

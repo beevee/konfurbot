@@ -45,18 +45,17 @@ func main() {
 
 	logger.Log("msg", "starting program", "pid", os.Getpid())
 
-	scheduleReader, err := ioutil.ReadFile(opts.ScheduleFile)
+	scheduleYAMLContents, err := ioutil.ReadFile(opts.ScheduleFile)
 	if err != nil {
 		logger.Log("msg", "failed to open schedule YAML file", "error", err)
 		os.Exit(1)
 	}
-
-	schedule, err := yaml.ParseSchedule(scheduleReader)
+	scheduleStorage := &konfurbot.Schedule{}
+	err = yaml.FillScheduleStorage(scheduleStorage, scheduleYAMLContents)
 	if err != nil {
 		logger.Log("msg", "failed to parse schedule YAML", "error", err)
 		os.Exit(1)
 	}
-	logger.Log("msg", "parsed schedule", "event_count", len(schedule.Events))
 
 	tz, err := time.LoadLocation(opts.Timezone)
 	if err != nil {
@@ -64,10 +63,10 @@ func main() {
 		os.Exit(1)
 	}
 	bot := &telegram.Bot{
-		Schedule:      schedule,
-		TelegramToken: opts.TelegramToken,
-		Timezone:      tz,
-		Logger:        log.NewContext(logger).With("component", "telegram"),
+		ScheduleStorage: scheduleStorage,
+		TelegramToken:   opts.TelegramToken,
+		Timezone:        tz,
+		Logger:          log.NewContext(logger).With("component", "telegram"),
 	}
 
 	mustStart(bot)

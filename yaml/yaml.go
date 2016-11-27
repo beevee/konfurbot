@@ -17,25 +17,22 @@ type Event struct {
 	Finish string `yaml:"finish"`
 }
 
-// ParseSchedule returns schedule struct parsed from YAML file
-func ParseSchedule(file []byte) (*konfurbot.Schedule, error) {
+// FillScheduleStorage fills schedule storage with events parsed from YAML file
+func FillScheduleStorage(storage konfurbot.ScheduleStorage, file []byte) error {
 	var parsedEvents []Event
 	if err := yaml.Unmarshal(file, &parsedEvents); err != nil {
-		return nil, err
+		return err
 	}
 
-	schedule := &konfurbot.Schedule{
-		Events: make(map[string][]konfurbot.Event),
-	}
 	for _, parsedEvent := range parsedEvents {
 		start, err := time.Parse("15:04", parsedEvent.Start)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		finish, err := time.Parse("15:04", parsedEvent.Finish)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		event := konfurbot.Event{
@@ -45,8 +42,8 @@ func ParseSchedule(file []byte) (*konfurbot.Schedule, error) {
 			Start:  start,
 			Finish: finish,
 		}
-		schedule.Events[parsedEvent.Type] = append(schedule.Events[parsedEvent.Type], event)
+		storage.AddEvent(event)
 	}
 
-	return schedule, nil
+	return nil
 }

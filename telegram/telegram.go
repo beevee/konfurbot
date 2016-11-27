@@ -13,7 +13,7 @@ import (
 
 // Bot handles interactions with Telegram users
 type Bot struct {
-	Schedule          *konfurbot.Schedule
+	ScheduleStorage   konfurbot.ScheduleStorage
 	TelegramToken     string
 	Timezone          *time.Location
 	Logger            konfurbot.Logger
