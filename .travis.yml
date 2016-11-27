@@ -1,5 +1,4 @@
 language: go
-sudo: false
 
 addons:
   ssh_known_hosts: beevee.ru
