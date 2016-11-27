@@ -15,8 +15,3 @@ type Event struct {
 type Schedule struct {
 	Events map[string][]Event
 }
-
-// GetAllEventsByType returns all events of given type, without filtering
-func (s Schedule) GetAllEventsByType(kind string) []Event {
-	return s.Events[kind]
-}
