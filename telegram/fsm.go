@@ -45,31 +45,35 @@ func initStateMachine() *fsm.FSM {
 		},
 
 		fsm.Callbacks{
-			greetCommand: extractCallbackParams(func(e *fsm.Event, chat telebot.Chat, bot *Bot) {
-				bot.telebot.SendMessage(chat, "Добро пожаловать на КонфУР!", stateMessageOptions[e.Dst])
+			greetCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
+				return bot.telebot.SendMessage(chat, "Добро пожаловать на КонфУР!", stateMessageOptions[e.Dst])
 			}),
 
-			foodCommand: extractCallbackParams(func(e *fsm.Event, chat telebot.Chat, bot *Bot) {
+			foodCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
 				var response string
 				for _, event := range bot.ScheduleStorage.GetEventsByType("food") {
 					response += fmt.Sprintf("%s — %s: %s\n",
 						event.Start.Format("15:04"), event.Finish.Format("15:04"), event.Short)
 				}
-				bot.telebot.SendMessage(chat, response, stateMessageOptions[e.Dst])
+				return bot.telebot.SendMessage(chat, response, stateMessageOptions[e.Dst])
 			}),
 
-			unknownCommand: extractCallbackParams(func(e *fsm.Event, chat telebot.Chat, bot *Bot) {
-				bot.telebot.SendMessage(chat, "Я не понимаю эту команду. Давай попробуем еще раз с начала.", stateMessageOptions[e.Dst])
+			unknownCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
+				return bot.telebot.SendMessage(chat, "Я не понимаю эту команду. Давай попробуем еще раз с начала.", stateMessageOptions[e.Dst])
 			}),
 		},
 	)
 }
 
-func extractCallbackParams(f func(*fsm.Event, telebot.Chat, *Bot)) func(*fsm.Event) {
+func wrapCallback(f func(*fsm.Event, telebot.Chat, *Bot) error) func(*fsm.Event) {
 	return func(e *fsm.Event) {
 		if len(e.Args) < 2 {
 			return
 		}
-		f(e, e.Args[0].(telebot.Chat), e.Args[0].(*Bot))
+		chat := e.Args[0].(telebot.Chat)
+		bot := e.Args[1].(*Bot)
+		if err := f(e, chat, bot); err != nil {
+			bot.Logger.Log("msg", "error sending message", "chatid", chat.ID, "error", err)
+		}
 	}
 }

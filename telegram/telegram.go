@@ -11,13 +11,19 @@ import (
 	"github.com/beevee/konfurbot"
 )
 
+// TelebotInterface is an excuse for tucnak's laziness
+type TelebotInterface interface {
+	Listen(chan telebot.Message, time.Duration)
+	SendMessage(telebot.Recipient, string, *telebot.SendOptions) error
+}
+
 // Bot handles interactions with Telegram users
 type Bot struct {
 	ScheduleStorage   konfurbot.ScheduleStorage
 	TelegramToken     string
 	Timezone          *time.Location
 	Logger            konfurbot.Logger
-	telebot           *telebot.Bot
+	telebot           TelebotInterface
 	chatStateMachines map[int64]*fsm.FSM
 	chatStateLock     sync.RWMutex
 	tomb              tomb.Tomb
@@ -80,11 +86,11 @@ func (b *Bot) handleMessage(message telebot.Message) {
 	}
 
 	b.Logger.Log("msg", "state machine exists, attempting transition", "chatid", message.Chat.ID,
-		"current_state", stateMachine.Current(), "command", message.Text)
+		"currentstate", stateMachine.Current(), "command", message.Text)
 	err := stateMachine.Event(message.Text, message.Chat, b)
 	if err != nil && err.Error() != "no transition" {
 		b.Logger.Log("msg", "something is wrong with the transition, will return to start",
-			"current_state", stateMachine.Current(), "chatid", message.Chat.ID, "error", err)
+			"currentstate", stateMachine.Current(), "chatid", message.Chat.ID, "error", err)
 		stateMachine.Event(unknownCommand, message.Chat, b)
 	}
 }

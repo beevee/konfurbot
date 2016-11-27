@@ -46,11 +46,11 @@ func TestYaml(t *testing.T) {
 
 		Convey("so we were able to parse it and fill a storage", func() {
 			var start, finish time.Time
-			s := mock.NewMockScheduleStorage(ctrl)
+			mockStorage := mock.NewMockScheduleStorage(ctrl)
 
 			start, _ = time.Parse("15:04", "09:00")
 			finish, _ = time.Parse("15:04", "10:00")
-			s.EXPECT().AddEvent(konfurbot.Event{
+			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "food",
 				Short:  "Утренний кофе",
 				Long:   "",
@@ -60,7 +60,7 @@ func TestYaml(t *testing.T) {
 
 			start, _ = time.Parse("15:04", "14:30")
 			finish, _ = time.Parse("15:04", "15:00")
-			s.EXPECT().AddEvent(konfurbot.Event{
+			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "food",
 				Short:  "Кофе-брейк",
 				Long:   "",
@@ -70,7 +70,7 @@ func TestYaml(t *testing.T) {
 
 			start, _ = time.Parse("15:04", "19:30")
 			finish, _ = time.Parse("15:04", "20:00")
-			s.EXPECT().AddEvent(konfurbot.Event{
+			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "food",
 				Short:  "Ужин",
 				Long:   "",
@@ -80,7 +80,7 @@ func TestYaml(t *testing.T) {
 
 			start, _ = time.Parse("15:04", "12:00")
 			finish, _ = time.Parse("15:04", "13:00")
-			s.EXPECT().AddEvent(konfurbot.Event{
+			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "talk",
 				Short:  "WAT",
 				Long:   "В докладе пойдет речь о том,\nчему равна сумма объекта и пустой строки.\n",
@@ -90,7 +90,7 @@ func TestYaml(t *testing.T) {
 
 			start, _ = time.Parse("15:04", "16:30")
 			finish, _ = time.Parse("15:04", "17:00")
-			s.EXPECT().AddEvent(konfurbot.Event{
+			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "fun",
 				Short:  "ЧГК",
 				Long:   "",
@@ -98,7 +98,7 @@ func TestYaml(t *testing.T) {
 				Finish: finish,
 			})
 
-			err := FillScheduleStorage(s, sYaml)
+			err := FillScheduleStorage(mockStorage, sYaml)
 			So(err, ShouldBeNil)
 		})
 	})
