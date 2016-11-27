@@ -1,1 +1,1 @@
-# konfurbot
+[![Build Status](https://travis-ci.org/beevee/konfurbot.svg?branch=master)](https://travis-ci.org/beevee/konfurbot) [![Coverage Status](https://coveralls.io/repos/github/beevee/konfurbot/badge.svg?branch=master)](https://coveralls.io/github/beevee/konfurbot?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/beevee/konfurbot)](https://goreportcard.com/report/github.com/beevee/konfurbot)
