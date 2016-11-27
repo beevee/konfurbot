@@ -13,11 +13,11 @@ before_install:
 
 script:
 - goveralls
-- cd cmd/konfurbot && go build
+- pushd cmd/konfurbot && go build && popd
 
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_f10f3c59f737_key -iv $encrypted_f10f3c59f737_iv
-  -in deploy_rsa.enc -out /tmp/deploy_rsa -d
+  -in $TRAVIS_BUILD_DIR/deploy_rsa.enc -out /tmp/deploy_rsa -d
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/deploy_rsa
 - ssh-add /tmp/deploy_rsa
