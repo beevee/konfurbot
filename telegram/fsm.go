@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	greetCommand         = "greet"
+	welcomeCommand       = "greet"
 	returnToStartCommand = "return"
 	unknownCommand       = "unknown"
 
@@ -29,11 +29,12 @@ const (
 
 	transferCommand = "🚜 Трансфер"
 
-	welcomeState = "welcome"
-	startState   = "start"
-	talkState    = "talk"
-	talkNowState = "talknow"
-	talkAllState = "talkall"
+	welcomeState  = "welcome"
+	startState    = "start"
+	talkState     = "talk"
+	talkNowState  = "talknow"
+	talkNextState = "talknext"
+	talkAllState  = "talkall"
 )
 
 var stateMessageOptions = map[string]*telebot.SendOptions{
@@ -65,6 +66,15 @@ var stateMessageOptions = map[string]*telebot.SendOptions{
 		},
 	},
 
+	talkNextState: &telebot.SendOptions{
+		ReplyMarkup: telebot.ReplyMarkup{
+			CustomKeyboard: [][]string{
+				[]string{talkLongCommand, talkShortCommand},
+			},
+			ResizeKeyboard: true,
+		},
+	},
+
 	talkAllState: &telebot.SendOptions{
 		ReplyMarkup: telebot.ReplyMarkup{
 			CustomKeyboard: [][]string{
@@ -80,21 +90,26 @@ func initStateMachine() *fsm.FSM {
 		welcomeState,
 
 		fsm.Events{
-			{Name: greetCommand, Src: []string{welcomeState}, Dst: startState},
+			{Name: welcomeCommand, Src: []string{welcomeState}, Dst: startState},
 			{Name: foodCommand, Src: []string{startState}, Dst: startState},
 			{Name: talkCommand, Src: []string{startState}, Dst: talkState},
 			{Name: talkNowCommand, Src: []string{talkState}, Dst: talkNowState},
-			{Name: talkLongCommand, Src: []string{talkNowState}, Dst: startState},
-			{Name: talkShortCommand, Src: []string{talkNowState}, Dst: startState},
+			{Name: talkNextCommand, Src: []string{talkState}, Dst: talkNextState},
+			{Name: talkLongCommand, Src: []string{talkNowState, talkNextState}, Dst: startState},
+			{Name: talkShortCommand, Src: []string{talkNowState, talkNextState}, Dst: startState},
 			{Name: talkAllCommand, Src: []string{talkState}, Dst: talkAllState},
 			{Name: talkTalkCommand, Src: []string{talkAllState}, Dst: startState},
 			{Name: talkMasterCommand, Src: []string{talkAllState}, Dst: startState},
 			{Name: returnToStartCommand, Src: []string{startState}, Dst: startState},
-			{Name: unknownCommand, Src: []string{startState}, Dst: startState},
+			{
+				Name: unknownCommand,
+				Src:  []string{welcomeState, startState, talkState, talkNowState, talkNextState, talkAllState},
+				Dst:  startState,
+			},
 		},
 
 		fsm.Callbacks{
-			greetCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
+			welcomeCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
 				return bot.telebot.SendMessage(chat, "Добро пожаловать на КонфУР!", stateMessageOptions[e.Dst])
 			}),
 
@@ -111,11 +126,17 @@ func initStateMachine() *fsm.FSM {
 				return bot.telebot.SendMessage(chat, "Их может оказаться довольно много. Тизеры надо?", stateMessageOptions[e.Dst])
 			}),
 
+			talkNextCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
+				return bot.telebot.SendMessage(chat, "Их может оказаться довольно много. Тизеры надо?", stateMessageOptions[e.Dst])
+			}),
+
 			talkLongCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
 				var events []konfurbot.Event
 				switch e.Src {
 				case talkNowState:
 					events = bot.ScheduleStorage.GetCurrentEventsByType("talk", time.Now().In(bot.Timezone))
+				case talkNextState:
+					events = bot.ScheduleStorage.GetNextEventsByType("talk", time.Now().In(bot.Timezone), time.Hour)
 				}
 				return bot.telebot.SendMessage(chat, makeResponseFromEvents(events, true), stateMessageOptions[e.Dst])
 			}),
@@ -125,6 +146,8 @@ func initStateMachine() *fsm.FSM {
 				switch e.Src {
 				case talkNowState:
 					events = bot.ScheduleStorage.GetCurrentEventsByType("talk", time.Now().In(bot.Timezone))
+				case talkNextState:
+					events = bot.ScheduleStorage.GetNextEventsByType("talk", time.Now().In(bot.Timezone), time.Hour)
 				}
 				return bot.telebot.SendMessage(chat, makeResponseFromEvents(events, false), stateMessageOptions[e.Dst])
 			}),

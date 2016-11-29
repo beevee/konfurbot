@@ -81,7 +81,7 @@ func (b *Bot) handleMessage(message telebot.Message) {
 		b.chatStateMachines[message.Chat.ID] = stateMachine
 		b.chatStateLock.Unlock()
 
-		stateMachine.Event(greetCommand, message.Chat, b)
+		stateMachine.Event(welcomeCommand, message.Chat, b)
 		return
 	}
 
