@@ -4,11 +4,14 @@ import "time"
 
 // ScheduleStorage provides searching and filtering capabilities over schedule
 type ScheduleStorage interface {
+	SetNightCutoff(time.Time)
 	AddEvent(Event)
 	GetEventsByType(string) []Event
 	GetEventsByTypeAndSubtype(string, string) []Event
 	GetCurrentEventsByType(string, time.Time) []Event
 	GetNextEventsByType(string, time.Time, time.Duration) []Event
+	GetDayEventsByType(string) []Event
+	GetNightEventsByType(string) []Event
 }
 
 // Event is a single event in conference
@@ -25,7 +28,13 @@ type Event struct {
 
 // Schedule is an implementation of ScheduleStorage
 type Schedule struct {
-	events map[string][]Event
+	nightCutoff time.Time
+	events      map[string][]Event
+}
+
+// SetNightCutoff sets time that separates night events from day events
+func (s *Schedule) SetNightCutoff(cutoff time.Time) {
+	s.nightCutoff = cutoff
 }
 
 // AddEvent adds event to storage, preserving order of events
@@ -68,6 +77,28 @@ func (s *Schedule) GetNextEventsByType(kind string, now time.Time, interval time
 	events := make([]Event, 0, len(s.events[kind]))
 	for _, event := range s.events[kind] {
 		if event.Start.After(now) && event.Start.Before(now.Add(interval)) {
+			events = append(events, event)
+		}
+	}
+	return events
+}
+
+// GetDayEventsByType returns list of events by type, and only events that will start before the night time
+func (s *Schedule) GetDayEventsByType(kind string) []Event {
+	events := make([]Event, 0, len(s.events[kind]))
+	for _, event := range s.events[kind] {
+		if event.Start.Before(s.nightCutoff) {
+			events = append(events, event)
+		}
+	}
+	return events
+}
+
+// GetNightEventsByType returns list of events by type, and only events that will end after the night time
+func (s *Schedule) GetNightEventsByType(kind string) []Event {
+	events := make([]Event, 0, len(s.events[kind]))
+	for _, event := range s.events[kind] {
+		if event.Finish.After(s.nightCutoff) {
 			events = append(events, event)
 		}
 	}

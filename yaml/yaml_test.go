@@ -17,6 +17,7 @@ func TestYaml(t *testing.T) {
 
 	Convey("Нам передали валидный YAML с расписанием", t, func() {
 		sYaml := []byte(`date: 29.11.2016
+night: 20:00
 events:
   - type: food
     short: Утренний кофе
@@ -53,11 +54,18 @@ events:
       Пицца пицца пицца
       Пицца пицца
     start: 11:30
-    finish: 14:25`)
+    finish: 14:25
+
+  - type: fun
+    short: Боулинг
+    venue: Возле лифтов`)
 
 		Convey("и мы наполнили этим расписанием сторадж", func() {
 			var start, finish time.Time
 			mockStorage := mock.NewMockScheduleStorage(ctrl)
+
+			nightCutoff, _ := time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
+			mockStorage.EXPECT().SetNightCutoff(nightCutoff)
 
 			start, _ = time.Parse("15:04 02.01.2006", "09:00 29.11.2016")
 			finish, _ = time.Parse("15:04 02.01.2006", "10:00 29.11.2016")
@@ -115,13 +123,40 @@ events:
 				Finish:  finish,
 			})
 
+			start, _ = time.Parse("15:04 02.01.2006", "00:00 29.11.2016")
+			finish, _ = time.Parse("15:04 02.01.2006", "23:59 29.11.2016")
+			mockStorage.EXPECT().AddEvent(konfurbot.Event{
+				Type:   "fun",
+				Venue:  "Возле лифтов",
+				Short:  "Боулинг",
+				Start:  start,
+				Finish: finish,
+			})
+
 			err := FillScheduleStorage(mockStorage, sYaml)
 			So(err, ShouldBeNil)
 		})
 	})
 
+	Convey("Нам передали валидный YAML, но в нем некорректное время начала ночи", t, func() {
+		sYaml := []byte(`date: 29.11.2016
+night: AAAAAAA
+events:
+  - type: food
+    short: Утренний кофе
+    start: 09:00
+    finish: 10:00`)
+
+		Convey("поэтому мы не смогли наполнить сторадж", func() {
+			mockStorage := mock.NewMockScheduleStorage(ctrl)
+			err := FillScheduleStorage(mockStorage, sYaml)
+			So(err, ShouldNotBeNil)
+		})
+	})
+
 	Convey("Нам передали валидный YAML, но в нем некорректное время завершения события", t, func() {
 		sYaml := []byte(`date: 29.11.2016
+night: 20:00
 events:
   - type: food
     short: Утренний кофе
@@ -129,14 +164,19 @@ events:
     finish: 嘘`)
 
 		Convey("поэтому мы не смогли наполнить сторадж", func() {
-			s := mock.NewMockScheduleStorage(ctrl)
-			err := FillScheduleStorage(s, sYaml)
+			mockStorage := mock.NewMockScheduleStorage(ctrl)
+
+			nightCutoff, _ := time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
+			mockStorage.EXPECT().SetNightCutoff(nightCutoff)
+
+			err := FillScheduleStorage(mockStorage, sYaml)
 			So(err, ShouldNotBeNil)
 		})
 	})
 
 	Convey("Нам передали валидный YAML, но в нем некорректное время начала события", t, func() {
 		sYaml := []byte(`date: 29.11.2016
+night: 20:00
 events:
   - type: food
     short: Утренний кофе
@@ -144,14 +184,19 @@ events:
     finish: 10:00`)
 
 		Convey("поэтому мы не смогли наполнить сторадж", func() {
-			s := mock.NewMockScheduleStorage(ctrl)
-			err := FillScheduleStorage(s, sYaml)
+			mockStorage := mock.NewMockScheduleStorage(ctrl)
+
+			nightCutoff, _ := time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
+			mockStorage.EXPECT().SetNightCutoff(nightCutoff)
+
+			err := FillScheduleStorage(mockStorage, sYaml)
 			So(err, ShouldNotBeNil)
 		})
 	})
 
 	Convey("Нам передали валидный YAML, но в нем некорректная дата конференции", t, func() {
 		sYaml := []byte(`date: かわいい！＾＝＾
+night: 20:00
 events:
   - type: food
     short: Утренний кофе
@@ -159,8 +204,8 @@ events:
     finish: 10:00`)
 
 		Convey("поэтому мы не смогли наполнить сторадж", func() {
-			s := mock.NewMockScheduleStorage(ctrl)
-			err := FillScheduleStorage(s, sYaml)
+			mockStorage := mock.NewMockScheduleStorage(ctrl)
+			err := FillScheduleStorage(mockStorage, sYaml)
 			So(err, ShouldNotBeNil)
 		})
 	})
@@ -169,8 +214,8 @@ events:
 		sYaml := []byte(`	1123123`)
 
 		Convey("поэтому мы не смогли наполнить сторадж", func() {
-			s := mock.NewMockScheduleStorage(ctrl)
-			err := FillScheduleStorage(s, sYaml)
+			mockStorage := mock.NewMockScheduleStorage(ctrl)
+			err := FillScheduleStorage(mockStorage, sYaml)
 			So(err, ShouldNotBeNil)
 		})
 	})

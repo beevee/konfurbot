@@ -48,6 +48,16 @@ func (_mr *_MockScheduleStorageRecorder) GetCurrentEventsByType(arg0, arg1 inter
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetCurrentEventsByType", arg0, arg1)
 }
 
+func (_m *MockScheduleStorage) GetDayEventsByType(_param0 string) []konfurbot.Event {
+	ret := _m.ctrl.Call(_m, "GetDayEventsByType", _param0)
+	ret0, _ := ret[0].([]konfurbot.Event)
+	return ret0
+}
+
+func (_mr *_MockScheduleStorageRecorder) GetDayEventsByType(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetDayEventsByType", arg0)
+}
+
 func (_m *MockScheduleStorage) GetEventsByType(_param0 string) []konfurbot.Event {
 	ret := _m.ctrl.Call(_m, "GetEventsByType", _param0)
 	ret0, _ := ret[0].([]konfurbot.Event)
@@ -76,4 +86,22 @@ func (_m *MockScheduleStorage) GetNextEventsByType(_param0 string, _param1 time.
 
 func (_mr *_MockScheduleStorageRecorder) GetNextEventsByType(arg0, arg1, arg2 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetNextEventsByType", arg0, arg1, arg2)
+}
+
+func (_m *MockScheduleStorage) GetNightEventsByType(_param0 string) []konfurbot.Event {
+	ret := _m.ctrl.Call(_m, "GetNightEventsByType", _param0)
+	ret0, _ := ret[0].([]konfurbot.Event)
+	return ret0
+}
+
+func (_mr *_MockScheduleStorageRecorder) GetNightEventsByType(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetNightEventsByType", arg0)
+}
+
+func (_m *MockScheduleStorage) SetNightCutoff(_param0 time.Time) {
+	_m.ctrl.Call(_m, "SetNightCutoff", _param0)
+}
+
+func (_mr *_MockScheduleStorageRecorder) SetNightCutoff(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetNightCutoff", arg0)
 }

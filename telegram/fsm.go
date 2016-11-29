@@ -25,7 +25,9 @@ const (
 	talkTalkCommand   = "Доклады"
 	talkMasterCommand = "Мастер-классы"
 
-	funCommand = "🍾 Развлечения"
+	funCommand      = "🍾 Развлечения"
+	funDayCommand   = "🍼 Утром"
+	funNightCommand = "🍸 Вечером"
 
 	transferCommand = "🚜 Трансфер"
 
@@ -35,6 +37,7 @@ const (
 	talkNowState  = "talknow"
 	talkNextState = "talknext"
 	talkAllState  = "talkall"
+	funState      = "fun"
 )
 
 var stateMessageOptions = map[string]*telebot.SendOptions{
@@ -88,6 +91,15 @@ var stateMessageOptions = map[string]*telebot.SendOptions{
 			ResizeKeyboard: true,
 		},
 	},
+
+	funState: &telebot.SendOptions{
+		ReplyMarkup: telebot.ReplyMarkup{
+			CustomKeyboard: [][]string{
+				[]string{funDayCommand, funNightCommand},
+			},
+			ResizeKeyboard: true,
+		},
+	},
 }
 
 func initStateMachine() *fsm.FSM {
@@ -105,10 +117,13 @@ func initStateMachine() *fsm.FSM {
 			{Name: talkAllCommand, Src: []string{talkState}, Dst: talkAllState},
 			{Name: talkTalkCommand, Src: []string{talkAllState}, Dst: startState},
 			{Name: talkMasterCommand, Src: []string{talkAllState}, Dst: startState},
+			{Name: funCommand, Src: []string{startState}, Dst: funState},
+			{Name: funDayCommand, Src: []string{funState}, Dst: startState},
+			{Name: funNightCommand, Src: []string{funState}, Dst: startState},
 			{Name: returnToStartCommand, Src: []string{startState}, Dst: startState},
 			{
 				Name: unknownCommand,
-				Src:  []string{welcomeState, startState, talkState, talkNowState, talkNextState, talkAllState},
+				Src:  []string{welcomeState, startState, talkState, talkNowState, talkNextState, talkAllState, funState},
 				Dst:  startState,
 			},
 		},
@@ -171,6 +186,20 @@ func initStateMachine() *fsm.FSM {
 				return bot.telebot.SendMessage(chat, "Полное расписание довольно длинное. Давай посмотрим отдельно, доклады или мастер-классы? С тизерами вообще не буду предлагать :)", stateMessageOptions[e.Dst])
 			}),
 
+			funCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
+				return bot.telebot.SendMessage(chat, "Утром или вечером?", stateMessageOptions[e.Dst])
+			}),
+
+			funDayCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
+				events := bot.ScheduleStorage.GetDayEventsByType("fun")
+				return bot.telebot.SendMessage(chat, makeResponseFromEvents(events, false), stateMessageOptions[e.Dst])
+			}),
+
+			funNightCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
+				events := bot.ScheduleStorage.GetNightEventsByType("fun")
+				return bot.telebot.SendMessage(chat, makeResponseFromEvents(events, false), stateMessageOptions[e.Dst])
+			}),
+
 			unknownCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
 				return bot.telebot.SendMessage(chat, "Я не понимаю эту команду. Давай попробуем еще раз с начала.", stateMessageOptions[e.Dst])
 			}),
@@ -194,21 +223,34 @@ func wrapCallback(f func(*fsm.Event, telebot.Chat, *Bot) error) func(*fsm.Event)
 func makeResponseFromEvents(events []konfurbot.Event, long bool) string {
 	var response string
 	for _, event := range events {
-		response += fmt.Sprintf("%s — %s", event.Start.Format("15:04"), event.Finish.Format("15:04"))
+		eventStart := event.Start.Format("15:04")
+		eventFinish := event.Finish.Format("15:04")
+		if eventStart == "00:00" && eventFinish == "23:59" {
+			response += "весь день"
+		} else {
+			response += fmt.Sprintf("%s — %s", eventStart, eventFinish)
+		}
+
 		if event.Venue != "" {
 			response += fmt.Sprintf(" [%s]", event.Venue)
 		}
+
 		response += fmt.Sprintf(": %s", event.Short)
+
 		if event.Speaker != "" {
 			response += fmt.Sprintf(" (%s)", event.Speaker)
 		}
+
 		response += "\n"
+
 		if long {
 			response += fmt.Sprintf("%s\n\n", event.Long)
 		}
 	}
+
 	if response == "" {
 		response = "Ничего нет :("
 	}
+
 	return response
 }

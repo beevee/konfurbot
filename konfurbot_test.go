@@ -10,7 +10,7 @@ import (
 func TestSchedule(t *testing.T) {
 	Convey("Мы наполняем расписание событиями", t, func() {
 		start := time.Now().Add(-30 * time.Minute)
-		finish := start.Add(time.Hour)
+		finish := time.Now().Add(30 * time.Minute)
 
 		schedule := Schedule{}
 
@@ -41,6 +41,41 @@ func TestSchedule(t *testing.T) {
 			Finish:  finish,
 		}
 		schedule.AddEvent(talk0)
+
+		var startFixed, finishFixed, nightCutoff time.Time
+
+		nightCutoff, _ = time.Parse("02.01.2006 15:04", "26.11.2016 20:00")
+		schedule.SetNightCutoff(nightCutoff)
+
+		startFixed, _ = time.Parse("02.01.2006 15:04", "26.11.2016 00:00")
+		finishFixed, _ = time.Parse("02.01.2006 15:04", "26.11.2016 23:59")
+		fun0 := Event{
+			Type:   "fun",
+			Short:  "Боулинг на весь день",
+			Start:  startFixed,
+			Finish: finishFixed,
+		}
+		schedule.AddEvent(fun0)
+
+		startFixed, _ = time.Parse("02.01.2006 15:04", "26.11.2016 10:00")
+		finishFixed, _ = time.Parse("02.01.2006 15:04", "26.11.2016 17:00")
+		fun1 := Event{
+			Type:   "fun",
+			Short:  "Клавогонки днем",
+			Start:  startFixed,
+			Finish: finishFixed,
+		}
+		schedule.AddEvent(fun1)
+
+		startFixed, _ = time.Parse("02.01.2006 15:04", "26.11.2016 20:00")
+		finishFixed, _ = time.Parse("02.01.2006 15:04", "26.11.2016 23:00")
+		fun2 := Event{
+			Type:   "fun",
+			Short:  "ЧГК вечером",
+			Start:  startFixed,
+			Finish: finishFixed,
+		}
+		schedule.AddEvent(fun2)
 
 		Convey("а потом получаем все события определенного типа в том же порядке", func() {
 			foodEvents := schedule.GetEventsByType("food")
@@ -93,6 +128,22 @@ func TestSchedule(t *testing.T) {
 
 				So(talkEvents, ShouldHaveLength, 0)
 			})
+		})
+
+		Convey("а потом получаем события, которые начинаются раньше определенного времени", func() {
+			funDayEvents := schedule.GetDayEventsByType("fun")
+
+			So(funDayEvents, ShouldHaveLength, 2)
+			So(funDayEvents[0], ShouldResemble, fun0)
+			So(funDayEvents[1], ShouldResemble, fun1)
+		})
+
+		Convey("а потом получаем события, которые заканчиваются позже определенного времени", func() {
+			funNightEvents := schedule.GetNightEventsByType("fun")
+
+			So(funNightEvents, ShouldHaveLength, 2)
+			So(funNightEvents[0], ShouldResemble, fun0)
+			So(funNightEvents[1], ShouldResemble, fun2)
 		})
 	})
 }
