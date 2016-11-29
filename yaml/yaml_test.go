@@ -15,41 +15,50 @@ func TestYaml(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	Convey("We were given a valid YAML schedule", t, func() {
-		sYaml := []byte(`- type: food
-  short: Утренний кофе
-  start: 09:00
-  finish: 10:00
+	Convey("Нам передали валидный YAML с расписанием", t, func() {
+		sYaml := []byte(`date: 29.11.2016
+events:
+  - type: food
+    short: Утренний кофе
+    start: 09:00
+    finish: 10:00
 
-- type: food
-  short: Кофе-брейк
-  start: 14:30
-  finish: 15:00
+  - type: food
+    short: Кофе-брейк
+    start: 14:30
+    finish: 15:00
 
-- type: food
-  short: Ужин
-  start: 19:30
-  finish: 20:00
+  - type: food
+    short: Ужин
+    start: 19:30
+    finish: 20:00
 
-- type: talk
-  short: WAT
-  long: |
-    В докладе пойдет речь о том,
-    чему равна сумма объекта и пустой строки.
-  start: 12:00
-  finish: 13:00
+  - type: talk
+    subtype: talk
+    speaker: Александр Казаков
+    short: Что делает умный инженер, когда у него падает сервис
+    long: |
+      "Работает же, чего ты начал" — такой фразой обычно встречают инициативу зафиксировать хронологию и причины факапа.
+      Действительно, когда пожар потушен, у нас резко падает мотивация проследить историю развития факапа и покопаться в деталях. А между тем, именно вдумчивый анализ хронологии инцидента позволяет найти глубинные и самые важные проблемы в разработке и эксплуатации, сделать неожиданные выводы и сформулировать задачи, которые качественно повысят стабильность сервиса.
+    start: 19:30
+    finish: 20:00
 
-- type: fun
-  short: ЧГК
-  start: 16:30
-  finish: 17:00`)
+  - type: talk
+    subtype: master
+    speaker: Василий Петров
+    short: Мастер-класс по приготовлению пиццы.
+    long: |
+      Пицца пицца пицца
+      Пицца пицца
+    start: 11:30
+    finish: 14:25`)
 
-		Convey("so we were able to parse it and fill a storage", func() {
+		Convey("и мы наполнили этим расписанием сторадж", func() {
 			var start, finish time.Time
 			mockStorage := mock.NewMockScheduleStorage(ctrl)
 
-			start, _ = time.Parse("15:04", "09:00")
-			finish, _ = time.Parse("15:04", "10:00")
+			start, _ = time.Parse("15:04 02.01.2006", "09:00 29.11.2016")
+			finish, _ = time.Parse("15:04 02.01.2006", "10:00 29.11.2016")
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "food",
 				Short:  "Утренний кофе",
@@ -58,8 +67,8 @@ func TestYaml(t *testing.T) {
 				Finish: finish,
 			})
 
-			start, _ = time.Parse("15:04", "14:30")
-			finish, _ = time.Parse("15:04", "15:00")
+			start, _ = time.Parse("15:04 02.01.2006", "14:30 29.11.2016")
+			finish, _ = time.Parse("15:04 02.01.2006", "15:00 29.11.2016")
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "food",
 				Short:  "Кофе-брейк",
@@ -68,8 +77,8 @@ func TestYaml(t *testing.T) {
 				Finish: finish,
 			})
 
-			start, _ = time.Parse("15:04", "19:30")
-			finish, _ = time.Parse("15:04", "20:00")
+			start, _ = time.Parse("15:04 02.01.2006", "19:30 29.11.2016")
+			finish, _ = time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "food",
 				Short:  "Ужин",
@@ -78,24 +87,28 @@ func TestYaml(t *testing.T) {
 				Finish: finish,
 			})
 
-			start, _ = time.Parse("15:04", "12:00")
-			finish, _ = time.Parse("15:04", "13:00")
+			start, _ = time.Parse("15:04 02.01.2006", "19:30 29.11.2016")
+			finish, _ = time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
-				Type:   "talk",
-				Short:  "WAT",
-				Long:   "В докладе пойдет речь о том,\nчему равна сумма объекта и пустой строки.\n",
-				Start:  start,
-				Finish: finish,
+				Type:    "talk",
+				Subtype: "talk",
+				Speaker: "Александр Казаков",
+				Short:   "Что делает умный инженер, когда у него падает сервис",
+				Long:    "\"Работает же, чего ты начал\" — такой фразой обычно встречают инициативу зафиксировать хронологию и причины факапа.\nДействительно, когда пожар потушен, у нас резко падает мотивация проследить историю развития факапа и покопаться в деталях. А между тем, именно вдумчивый анализ хронологии инцидента позволяет найти глубинные и самые важные проблемы в разработке и эксплуатации, сделать неожиданные выводы и сформулировать задачи, которые качественно повысят стабильность сервиса.\n",
+				Start:   start,
+				Finish:  finish,
 			})
 
-			start, _ = time.Parse("15:04", "16:30")
-			finish, _ = time.Parse("15:04", "17:00")
+			start, _ = time.Parse("15:04 02.01.2006", "11:30 29.11.2016")
+			finish, _ = time.Parse("15:04 02.01.2006", "14:25 29.11.2016")
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
-				Type:   "fun",
-				Short:  "ЧГК",
-				Long:   "",
-				Start:  start,
-				Finish: finish,
+				Type:    "talk",
+				Subtype: "master",
+				Speaker: "Василий Петров",
+				Short:   "Мастер-класс по приготовлению пиццы.",
+				Long:    "Пицца пицца пицца\nПицца пицца\n",
+				Start:   start,
+				Finish:  finish,
 			})
 
 			err := FillScheduleStorage(mockStorage, sYaml)
@@ -103,36 +116,55 @@ func TestYaml(t *testing.T) {
 		})
 	})
 
-	Convey("We were given generally valid YAML schedule with invalid start time", t, func() {
-		sYaml := []byte(`- type: food
-  short: Утренний кофе
-  start: 09:00
-  finish: 嘘`)
+	Convey("Нам передали валидный YAML, но в нем некорректное время завершения события", t, func() {
+		sYaml := []byte(`date: 29.11.2016
+events:
+  - type: food
+    short: Утренний кофе
+    start: 09:00
+    finish: 嘘`)
 
-		Convey("so we were not able to parse it", func() {
+		Convey("поэтому мы не смогли наполнить сторадж", func() {
 			s := mock.NewMockScheduleStorage(ctrl)
 			err := FillScheduleStorage(s, sYaml)
 			So(err, ShouldNotBeNil)
 		})
 	})
 
-	Convey("We were given generally valid YAML schedule with invalid finish time", t, func() {
-		sYaml := []byte(`- type: food
-  short: Утренний кофе
-  start: 不正解
-  finish: 10:00`)
+	Convey("Нам передали валидный YAML, но в нем некорректное время начала события", t, func() {
+		sYaml := []byte(`date: 29.11.2016
+events:
+  - type: food
+    short: Утренний кофе
+    start: 不正解
+    finish: 10:00`)
 
-		Convey("so we were not able to parse it", func() {
+		Convey("поэтому мы не смогли наполнить сторадж", func() {
 			s := mock.NewMockScheduleStorage(ctrl)
 			err := FillScheduleStorage(s, sYaml)
 			So(err, ShouldNotBeNil)
 		})
 	})
 
-	Convey("We were given totally invalid YAML schedule", t, func() {
+	Convey("Нам передали валидный YAML, но в нем некорректная дата конференции", t, func() {
+		sYaml := []byte(`date: かわいい！＾＝＾
+events:
+  - type: food
+    short: Утренний кофе
+    start: 09:00
+    finish: 10:00`)
+
+		Convey("поэтому мы не смогли наполнить сторадж", func() {
+			s := mock.NewMockScheduleStorage(ctrl)
+			err := FillScheduleStorage(s, sYaml)
+			So(err, ShouldNotBeNil)
+		})
+	})
+
+	Convey("Нам передали полностью невалидный YAML", t, func() {
 		sYaml := []byte(`	1123123`)
 
-		Convey("so we were not able to parse it", func() {
+		Convey("поэтому мы не смогли наполнить сторадж", func() {
 			s := mock.NewMockScheduleStorage(ctrl)
 			err := FillScheduleStorage(s, sYaml)
 			So(err, ShouldNotBeNil)
