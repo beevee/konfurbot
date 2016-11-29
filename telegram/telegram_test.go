@@ -43,7 +43,7 @@ func TestTelegram(t *testing.T) {
 				hasButtons("🌶 Еда", "🔥 Доклады / МК", "🍾 Развлечения", "🚜 Трансфер"))
 			bot.handleMessage(telebot.Message{Chat: chat, Text: "/start"})
 
-			Convey("пользователь спрашивает про еду", func() {
+			Convey("пользователь спрашивает про еду (у еды есть место проведения, но нет спикера)", func() {
 				mockStorage.EXPECT().GetEventsByType("food").Return([]konfurbot.Event{
 					konfurbot.Event{Type: "food", Short: "お好み焼き", Venue: "Бар", Start: start, Finish: finish},
 					konfurbot.Event{Type: "food", Short: "焼き鳥", Venue: "Кафе", Start: start, Finish: finish},
@@ -122,22 +122,56 @@ func TestTelegram(t *testing.T) {
 						hasButtons("Доклады", "Мастер-классы"))
 					bot.handleMessage(telebot.Message{Chat: chat, Text: "Все"})
 
-					Convey("доклады", func() {
+					Convey("доклады (у докладов есть спикер и место проведения)", func() {
 						mockStorage.EXPECT().GetEventsByTypeAndSubtype("talk", "talk").Return([]konfurbot.Event{
-							konfurbot.Event{Type: "talk", Subtype: "talk", Short: "WAT", Long: "WAAAAT", Start: start, Finish: finish},
-							konfurbot.Event{Type: "talk", Subtype: "talk", Short: "WAT 2", Long: "WAAAAT 22", Start: start, Finish: finish},
+							konfurbot.Event{
+								Type:    "talk",
+								Subtype: "talk",
+								Speaker: "Александр Казаков",
+								Venue:   "Учебный класс 1",
+								Short:   "WAT",
+								Long:    "WAAAAT",
+								Start:   start,
+								Finish:  finish,
+							},
+							konfurbot.Event{
+								Type:    "talk",
+								Subtype: "talk",
+								Speaker: "Василий Петров",
+								Venue:   "Учебный класс 2",
+								Short:   "WAT 2",
+								Long:    "WAAAAT 22",
+								Start:   start,
+								Finish:  finish,
+							},
 						})
-						mockTelebot.EXPECT().SendMessage(chat, "17:00 — 19:00: WAT\n17:00 — 19:00: WAT 2\n",
+						mockTelebot.EXPECT().SendMessage(chat, "17:00 — 19:00 [Учебный класс 1]: WAT (Александр Казаков)\n17:00 — 19:00 [Учебный класс 2]: WAT 2 (Василий Петров)\n",
 							hasButtons("🌶 Еда", "🔥 Доклады / МК", "🍾 Развлечения", "🚜 Трансфер"))
 						bot.handleMessage(telebot.Message{Chat: chat, Text: "Доклады"})
 					})
 
-					Convey("мастер-классы", func() {
+					Convey("мастер-классы (у мастер-классов есть спикер, но нет места проведения)", func() {
 						mockStorage.EXPECT().GetEventsByTypeAndSubtype("talk", "master").Return([]konfurbot.Event{
-							konfurbot.Event{Type: "talk", Subtype: "master", Short: "WAT", Long: "WAAAAT", Start: start, Finish: finish},
-							konfurbot.Event{Type: "talk", Subtype: "master", Short: "WAT 2", Long: "WAAAAT 22", Start: start, Finish: finish},
+							konfurbot.Event{
+								Type:    "talk",
+								Subtype: "master",
+								Short:   "WAT",
+								Long:    "WAAAAT",
+								Speaker: "Александр Казаков",
+								Start:   start,
+								Finish:  finish,
+							},
+							konfurbot.Event{
+								Type:    "talk",
+								Subtype: "master",
+								Short:   "WAT 2",
+								Long:    "WAAAAT 22",
+								Speaker: "Василий Петров",
+								Start:   start,
+								Finish:  finish,
+							},
 						})
-						mockTelebot.EXPECT().SendMessage(chat, "17:00 — 19:00: WAT\n17:00 — 19:00: WAT 2\n",
+						mockTelebot.EXPECT().SendMessage(chat, "17:00 — 19:00: WAT (Александр Казаков)\n17:00 — 19:00: WAT 2 (Василий Петров)\n",
 							hasButtons("🌶 Еда", "🔥 Доклады / МК", "🍾 Развлечения", "🚜 Трансфер"))
 						bot.handleMessage(telebot.Message{Chat: chat, Text: "Мастер-классы"})
 					})

@@ -193,7 +193,11 @@ func makeResponseFromEvents(events []konfurbot.Event, long bool) string {
 		if event.Venue != "" {
 			response += fmt.Sprintf(" [%s]", event.Venue)
 		}
-		response += fmt.Sprintf(": %s\n", event.Short)
+		response += fmt.Sprintf(": %s", event.Short)
+		if event.Speaker != "" {
+			response += fmt.Sprintf(" (%s)", event.Speaker)
+		}
+		response += "\n"
 		if long {
 			response += fmt.Sprintf("%s\n\n", event.Long)
 		}
