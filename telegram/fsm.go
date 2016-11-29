@@ -51,7 +51,9 @@ var stateMessageOptions = map[string]*telebot.SendOptions{
 	talkState: &telebot.SendOptions{
 		ReplyMarkup: telebot.ReplyMarkup{
 			CustomKeyboard: [][]string{
-				[]string{talkNowCommand, talkNextCommand, talkAllCommand},
+				[]string{talkNowCommand},
+				[]string{talkNextCommand},
+				[]string{talkAllCommand},
 			},
 			ResizeKeyboard: true,
 		},
@@ -60,7 +62,8 @@ var stateMessageOptions = map[string]*telebot.SendOptions{
 	talkNowState: &telebot.SendOptions{
 		ReplyMarkup: telebot.ReplyMarkup{
 			CustomKeyboard: [][]string{
-				[]string{talkLongCommand, talkShortCommand},
+				[]string{talkLongCommand},
+				[]string{talkShortCommand},
 			},
 			ResizeKeyboard: true,
 		},
@@ -69,7 +72,8 @@ var stateMessageOptions = map[string]*telebot.SendOptions{
 	talkNextState: &telebot.SendOptions{
 		ReplyMarkup: telebot.ReplyMarkup{
 			CustomKeyboard: [][]string{
-				[]string{talkLongCommand, talkShortCommand},
+				[]string{talkLongCommand},
+				[]string{talkShortCommand},
 			},
 			ResizeKeyboard: true,
 		},
@@ -78,7 +82,8 @@ var stateMessageOptions = map[string]*telebot.SendOptions{
 	talkAllState: &telebot.SendOptions{
 		ReplyMarkup: telebot.ReplyMarkup{
 			CustomKeyboard: [][]string{
-				[]string{talkTalkCommand, talkMasterCommand},
+				[]string{talkTalkCommand},
+				[]string{talkMasterCommand},
 			},
 			ResizeKeyboard: true,
 		},
