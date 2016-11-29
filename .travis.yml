@@ -13,7 +13,7 @@ before_install:
 
 script:
 - goveralls
-- pushd cmd/konfurbot && go build && popd
+- pushd cmd/konfurbot && go build && ./konfurbot --checkmode && popd
 
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_f10f3c59f737_key -iv $encrypted_f10f3c59f737_iv

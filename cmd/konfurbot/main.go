@@ -23,6 +23,7 @@ func main() {
 	var opts struct {
 		LogFile       string `short:"l" long:"logfile" description:"log file name (writes to stdout if not specified)" env:"KONFURBOT_LOGFILE"`
 		ScheduleFile  string `short:"s" long:"schedulefile" default:"schedule.yml" description:"schedule YAML file name" env:"KONFURBOT_SCHEDULEFILE"`
+		CheckMode     bool   `short:"c" long:"checkmode" description:"check schedule file for correctness and exit"`
 		TelegramToken string `short:"t" long:"telegram-token" description:"@KonfurBot Telegram token" env:"KONFURBOT_TOKEN"`
 		Timezone      string `short:"z" long:"timezone" default:"Asia/Yekaterinburg" description:"Local timezone" env:"KONFURBOT_TIMEZONE"`
 	}
@@ -55,6 +56,10 @@ func main() {
 	if err != nil {
 		logger.Log("msg", "failed to parse schedule YAML", "error", err)
 		os.Exit(1)
+	}
+	if opts.CheckMode {
+		logger.Log("msg", "successfully parsed schedule YAML, and we are in check mode, exiting now")
+		os.Exit(0)
 	}
 
 	tz, err := time.LoadLocation(opts.Timezone)
