@@ -15,6 +15,7 @@ type Schedule struct {
 		Type    string `yaml:"type"`
 		Subtype string `yaml:"subtype"`
 		Speaker string `yaml:"speaker"`
+		Venue   string `yaml:"venue"`
 		Short   string `yaml:"short"`
 		Long    string `yaml:"long"`
 		Start   string `yaml:"start"`
@@ -49,6 +50,7 @@ func FillScheduleStorage(storage konfurbot.ScheduleStorage, file []byte) error {
 			Type:    parsedEvent.Type,
 			Subtype: parsedEvent.Subtype,
 			Speaker: parsedEvent.Speaker,
+			Venue:   parsedEvent.Venue,
 			Short:   parsedEvent.Short,
 			Long:    parsedEvent.Long,
 			Start:   baseDate.Add(time.Duration(startTime.Hour())*time.Hour + time.Duration(startTime.Minute())*time.Minute),

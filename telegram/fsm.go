@@ -189,8 +189,11 @@ func wrapCallback(f func(*fsm.Event, telebot.Chat, *Bot) error) func(*fsm.Event)
 func makeResponseFromEvents(events []konfurbot.Event, long bool) string {
 	var response string
 	for _, event := range events {
-		response += fmt.Sprintf("%s — %s: %s\n",
-			event.Start.Format("15:04"), event.Finish.Format("15:04"), event.Short)
+		response += fmt.Sprintf("%s — %s", event.Start.Format("15:04"), event.Finish.Format("15:04"))
+		if event.Venue != "" {
+			response += fmt.Sprintf(" [%s]", event.Venue)
+		}
+		response += fmt.Sprintf(": %s\n", event.Short)
 		if long {
 			response += fmt.Sprintf("%s\n\n", event.Long)
 		}

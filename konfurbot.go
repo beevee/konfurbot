@@ -16,6 +16,7 @@ type Event struct {
 	Type    string
 	Subtype string
 	Speaker string
+	Venue   string
 	Short   string
 	Long    string
 	Start   time.Time
