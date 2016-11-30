@@ -396,35 +396,39 @@ events:
     venue: 1 этаж - за ресепшном
 
   - type: fun
-    short: Разукрашка
-    venue: 1 этаж - кулуар
-    finish: 20:00
-
-  - type: fun
-    short: Программирование на беговых дорожках
-    venue: 2 этаж - лифты
-    finish: 20:00
+    short: Бассейн с шарами
+    venue: 2 этаж - библиотека
 
   - type: fun
     short: Кикер и аэрохоккей
     venue: 2 этаж - лифты
 
   - type: fun
-    short: Бассейн с шарами
-    venue: 2 этаж - библиотека
-
-  - type: fun
-    short: Гироскутеры
-    venue: 2 этаж - коридор
-    finish: 20:00
-
-  - type: fun
     short: CS 1.6 и приставки
     venue: Комната 202
 
   - type: fun
+    short: Разукрашка
+    venue: 1 этаж - кулуар
+    start: 10:00
+    finish: 20:00
+
+  - type: fun
+    short: Программирование на беговых дорожках
+    venue: 2 этаж - лифты
+    start: 10:00
+    finish: 20:00
+
+  - type: fun
+    short: Гироскутеры
+    venue: 2 этаж - коридор
+    start: 10:00
+    finish: 20:00
+
+  - type: fun
     short: Стрельба из лука
     venue: Спортзал №1
+    start: 10:00
     finish: 20:00
 
   - type: fun
