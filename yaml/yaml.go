@@ -43,24 +43,26 @@ func FillScheduleStorage(storage konfurbot.ScheduleStorage, file []byte) error {
 	storage.SetNightCutoff(baseDate.Add(time.Duration(nightCutoff.Hour())*time.Hour + time.Duration(nightCutoff.Minute())*time.Minute))
 
 	for _, parsedEvent := range parsedSchedule.Events {
-		var startTime, finishTime time.Time
-
 		if parsedEvent.Start == "" {
 			parsedEvent.Start = "00:00"
 		}
-		startTime, err = time.Parse("15:04", parsedEvent.Start)
+		startTime, err := time.Parse("15:04", parsedEvent.Start)
 		if err != nil {
 			return err
 		}
+		start := baseDate.Add(time.Duration(startTime.Hour())*time.Hour + time.Duration(startTime.Minute())*time.Minute)
 
 		if parsedEvent.Finish == "" {
 			parsedEvent.Finish = "23:59"
 		}
-		finishTime, err = time.Parse("15:04", parsedEvent.Finish)
+		finishTime, err := time.Parse("15:04", parsedEvent.Finish)
 		if err != nil {
 			return err
 		}
-		baseDate.Add(time.Duration(finishTime.Hour())*time.Hour + time.Duration(finishTime.Minute())*time.Minute)
+		finish := baseDate.Add(time.Duration(finishTime.Hour())*time.Hour + time.Duration(finishTime.Minute())*time.Minute)
+		if finish.Before(start) {
+			finish = finish.Add(24 * time.Hour)
+		}
 
 		event := konfurbot.Event{
 			Type:    parsedEvent.Type,
@@ -69,8 +71,8 @@ func FillScheduleStorage(storage konfurbot.ScheduleStorage, file []byte) error {
 			Venue:   parsedEvent.Venue,
 			Short:   parsedEvent.Short,
 			Long:    parsedEvent.Long,
-			Start:   baseDate.Add(time.Duration(startTime.Hour())*time.Hour + time.Duration(startTime.Minute())*time.Minute),
-			Finish:  baseDate.Add(time.Duration(finishTime.Hour())*time.Hour + time.Duration(finishTime.Minute())*time.Minute),
+			Start:   start,
+			Finish:  finish,
 		}
 		storage.AddEvent(event)
 	}
