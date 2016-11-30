@@ -446,26 +446,31 @@ events:
     short: Платный пивной бар
     venue: Кулуары
     start: 20:30
+    finish: 01:00+
 
   - type: fun
     short: Трасса с гонками
     venue: Учебный класс №1
     start: 20:00
+    finish: 01:00+
 
   - type: fun
     short: Зона настольных игр
     venue: Учебный класс №2
     start: 20:00
+    finish: 01:00+
 
   - type: fun
     short: Борьба подушками
     venue: Спортзал №1
     start: 20:00
+    finish: 01:00+
 
   - type: fun
     short: Спальная зона
     venue: Спортзал №2
     start: 22:00
+    finish: 10:00+
 
   - type: fun
     short: Типа-ЧГК
@@ -477,7 +482,7 @@ events:
     short: Арчеритаг
     venue: 6 этаж
     start: 22:00
-    finish: 01:00
+    finish: 01:00+
 
   - type: transfer
     subtype: main
