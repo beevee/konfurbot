@@ -223,9 +223,14 @@ func wrapCallback(f func(*fsm.Event, telebot.Chat, *Bot) error) func(*fsm.Event)
 func makeResponseFromEvents(events []konfurbot.Event, long bool) string {
 	var response string
 	for _, event := range events {
-		eventStart := event.Start.Format("15:04")
-		eventFinish := event.Finish.Format("15:04")
-		if eventStart == "00:00" && eventFinish == "23:59" {
+		var eventStart, eventFinish string
+		if event.Start != nil {
+			eventStart = event.Start.Format("15:04")
+		}
+		if event.Finish != nil {
+			eventFinish = event.Finish.Format("15:04")
+		}
+		if eventStart == "" && eventFinish == "" {
 			response += "весь день"
 		} else {
 			response += fmt.Sprintf("%s — %s", eventStart, eventFinish)

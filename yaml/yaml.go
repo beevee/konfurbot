@@ -1,6 +1,7 @@
 package yaml
 
 import (
+	"strings"
 	"time"
 
 	"gopkg.in/yaml.v2"
@@ -43,25 +44,34 @@ func FillScheduleStorage(storage konfurbot.ScheduleStorage, file []byte) error {
 	storage.SetNightCutoff(baseDate.Add(time.Duration(nightCutoff.Hour())*time.Hour + time.Duration(nightCutoff.Minute())*time.Minute))
 
 	for _, parsedEvent := range parsedSchedule.Events {
+		var start, finish *time.Time
+
 		if parsedEvent.Start == "" {
-			parsedEvent.Start = "00:00"
+			start = nil
+		} else {
+			startTime, shift, err := parseRichTime(parsedEvent.Start)
+			if err != nil {
+				return err
+			}
+			startTime = baseDate.Add(time.Duration(startTime.Hour())*time.Hour + time.Duration(startTime.Minute())*time.Minute)
+			if shift {
+				startTime = startTime.Add(24 * time.Hour)
+			}
+			start = &startTime
 		}
-		startTime, err := time.Parse("15:04", parsedEvent.Start)
-		if err != nil {
-			return err
-		}
-		start := baseDate.Add(time.Duration(startTime.Hour())*time.Hour + time.Duration(startTime.Minute())*time.Minute)
 
 		if parsedEvent.Finish == "" {
-			parsedEvent.Finish = "23:59"
-		}
-		finishTime, err := time.Parse("15:04", parsedEvent.Finish)
-		if err != nil {
-			return err
-		}
-		finish := baseDate.Add(time.Duration(finishTime.Hour())*time.Hour + time.Duration(finishTime.Minute())*time.Minute)
-		if finish.Before(start) {
-			finish = finish.Add(24 * time.Hour)
+			finish = nil
+		} else {
+			finishTime, shift, err := parseRichTime(parsedEvent.Finish)
+			if err != nil {
+				return err
+			}
+			finishTime = baseDate.Add(time.Duration(finishTime.Hour())*time.Hour + time.Duration(finishTime.Minute())*time.Minute)
+			if shift {
+				finishTime = finishTime.Add(24 * time.Hour)
+			}
+			finish = &finishTime
 		}
 
 		event := konfurbot.Event{
@@ -78,4 +88,17 @@ func FillScheduleStorage(storage konfurbot.ScheduleStorage, file []byte) error {
 	}
 
 	return nil
+}
+
+func parseRichTime(timeString string) (time.Time, bool, error) {
+	var timeShift bool
+	if strings.HasSuffix(timeString, "+") {
+		timeString = timeString[:len(timeString)-1]
+		timeShift = true
+	}
+	timeParsed, err := time.Parse("15:04", timeString)
+	if err != nil {
+		return time.Time{}, false, err
+	}
+	return timeParsed, timeShift, nil
 }

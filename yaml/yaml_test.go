@@ -62,48 +62,47 @@ events:
 
   - type: fun
     short: Ночная забава
-    start: 21:00
-    finish: 02:00`)
+    start: 01:00+
+    finish: 02:00+`)
 
 		Convey("и мы наполнили этим расписанием сторадж", func() {
-			var start, finish time.Time
 			mockStorage := mock.NewMockScheduleStorage(ctrl)
 
 			nightCutoff, _ := time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
 			mockStorage.EXPECT().SetNightCutoff(nightCutoff)
 
-			start, _ = time.Parse("15:04 02.01.2006", "09:00 29.11.2016")
-			finish, _ = time.Parse("15:04 02.01.2006", "10:00 29.11.2016")
+			start, _ := time.Parse("15:04 02.01.2006", "09:00 29.11.2016")
+			finish, _ := time.Parse("15:04 02.01.2006", "10:00 29.11.2016")
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "food",
 				Short:  "Утренний кофе",
 				Long:   "",
-				Start:  start,
-				Finish: finish,
+				Start:  &start,
+				Finish: &finish,
 			})
 
-			start, _ = time.Parse("15:04 02.01.2006", "14:30 29.11.2016")
-			finish, _ = time.Parse("15:04 02.01.2006", "15:00 29.11.2016")
+			start2, _ := time.Parse("15:04 02.01.2006", "14:30 29.11.2016")
+			finish2, _ := time.Parse("15:04 02.01.2006", "15:00 29.11.2016")
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "food",
 				Short:  "Кофе-брейк",
 				Long:   "",
-				Start:  start,
-				Finish: finish,
+				Start:  &start2,
+				Finish: &finish2,
 			})
 
-			start, _ = time.Parse("15:04 02.01.2006", "19:30 29.11.2016")
-			finish, _ = time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
+			start3, _ := time.Parse("15:04 02.01.2006", "19:30 29.11.2016")
+			finish3, _ := time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "food",
 				Short:  "Ужин",
 				Long:   "",
-				Start:  start,
-				Finish: finish,
+				Start:  &start3,
+				Finish: &finish3,
 			})
 
-			start, _ = time.Parse("15:04 02.01.2006", "19:30 29.11.2016")
-			finish, _ = time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
+			start4, _ := time.Parse("15:04 02.01.2006", "19:30 29.11.2016")
+			finish4, _ := time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:    "talk",
 				Subtype: "talk",
@@ -111,12 +110,12 @@ events:
 				Venue:   "Кафе",
 				Short:   "Что делает умный инженер, когда у него падает сервис",
 				Long:    "\"Работает же, чего ты начал\" — такой фразой обычно встречают инициативу зафиксировать хронологию и причины факапа.\nДействительно, когда пожар потушен, у нас резко падает мотивация проследить историю развития факапа и покопаться в деталях. А между тем, именно вдумчивый анализ хронологии инцидента позволяет найти глубинные и самые важные проблемы в разработке и эксплуатации, сделать неожиданные выводы и сформулировать задачи, которые качественно повысят стабильность сервиса.\n",
-				Start:   start,
-				Finish:  finish,
+				Start:   &start4,
+				Finish:  &finish4,
 			})
 
-			start, _ = time.Parse("15:04 02.01.2006", "11:30 29.11.2016")
-			finish, _ = time.Parse("15:04 02.01.2006", "14:25 29.11.2016")
+			start5, _ := time.Parse("15:04 02.01.2006", "11:30 29.11.2016")
+			finish5, _ := time.Parse("15:04 02.01.2006", "14:25 29.11.2016")
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:    "talk",
 				Subtype: "master",
@@ -124,27 +123,23 @@ events:
 				Venue:   "Переговорка 711",
 				Short:   "Мастер-класс по приготовлению пиццы.",
 				Long:    "Пицца пицца пицца\nПицца пицца\n",
-				Start:   start,
-				Finish:  finish,
+				Start:   &start5,
+				Finish:  &finish5,
 			})
 
-			start, _ = time.Parse("15:04 02.01.2006", "00:00 29.11.2016")
-			finish, _ = time.Parse("15:04 02.01.2006", "23:59 29.11.2016")
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
-				Type:   "fun",
-				Venue:  "Возле лифтов",
-				Short:  "Боулинг",
-				Start:  start,
-				Finish: finish,
+				Type:  "fun",
+				Venue: "Возле лифтов",
+				Short: "Боулинг",
 			})
 
-			start, _ = time.Parse("15:04 02.01.2006", "21:00 29.11.2016")
-			finish, _ = time.Parse("15:04 02.01.2006", "02:00 30.11.2016")
+			start6, _ := time.Parse("15:04 02.01.2006", "01:00 30.11.2016")
+			finish6, _ := time.Parse("15:04 02.01.2006", "02:00 30.11.2016")
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "fun",
 				Short:  "Ночная забава",
-				Start:  start,
-				Finish: finish,
+				Start:  &start6,
+				Finish: &finish6,
 			})
 
 			err := FillScheduleStorage(mockStorage, sYaml)

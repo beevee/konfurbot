@@ -18,8 +18,8 @@ func TestSchedule(t *testing.T) {
 			Type:   "food",
 			Short:  "Кофе-брейк",
 			Long:   "",
-			Start:  start,
-			Finish: finish,
+			Start:  &start,
+			Finish: &finish,
 		}
 		schedule.AddEvent(food0)
 
@@ -27,8 +27,8 @@ func TestSchedule(t *testing.T) {
 			Type:   "food",
 			Short:  "Ужин",
 			Long:   "",
-			Start:  start,
-			Finish: finish,
+			Start:  &start,
+			Finish: &finish,
 		}
 		schedule.AddEvent(food1)
 
@@ -37,43 +37,37 @@ func TestSchedule(t *testing.T) {
 			Subtype: "talk",
 			Short:   "WAT",
 			Long:    "В докладе пойдет речь о том,\nчему равна сумма объекта и пустой строки.\n",
-			Start:   start,
-			Finish:  finish,
+			Start:   &start,
+			Finish:  &finish,
 		}
 		schedule.AddEvent(talk0)
 
-		var startFixed, finishFixed, nightCutoff time.Time
-
-		nightCutoff, _ = time.Parse("02.01.2006 15:04", "26.11.2016 20:00")
+		nightCutoff, _ := time.Parse("02.01.2006 15:04", "26.11.2016 20:00")
 		schedule.SetNightCutoff(nightCutoff)
 
-		startFixed, _ = time.Parse("02.01.2006 15:04", "26.11.2016 00:00")
-		finishFixed, _ = time.Parse("02.01.2006 15:04", "26.11.2016 23:59")
 		fun0 := Event{
-			Type:   "fun",
-			Short:  "Боулинг на весь день",
-			Start:  startFixed,
-			Finish: finishFixed,
+			Type:  "fun",
+			Short: "Боулинг на весь день",
 		}
 		schedule.AddEvent(fun0)
 
-		startFixed, _ = time.Parse("02.01.2006 15:04", "26.11.2016 10:00")
-		finishFixed, _ = time.Parse("02.01.2006 15:04", "26.11.2016 17:00")
+		startFixed, _ := time.Parse("02.01.2006 15:04", "26.11.2016 10:00")
+		finishFixed, _ := time.Parse("02.01.2006 15:04", "26.11.2016 17:00")
 		fun1 := Event{
 			Type:   "fun",
 			Short:  "Клавогонки днем",
-			Start:  startFixed,
-			Finish: finishFixed,
+			Start:  &startFixed,
+			Finish: &finishFixed,
 		}
 		schedule.AddEvent(fun1)
 
-		startFixed, _ = time.Parse("02.01.2006 15:04", "26.11.2016 20:00")
-		finishFixed, _ = time.Parse("02.01.2006 15:04", "26.11.2016 23:00")
+		startFixed2, _ := time.Parse("02.01.2006 15:04", "26.11.2016 20:00")
+		finishFixed2, _ := time.Parse("02.01.2006 15:04", "26.11.2016 23:00")
 		fun2 := Event{
 			Type:   "fun",
 			Short:  "ЧГК вечером",
-			Start:  startFixed,
-			Finish: finishFixed,
+			Start:  &startFixed2,
+			Finish: &finishFixed2,
 		}
 		schedule.AddEvent(fun2)
 

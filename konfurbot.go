@@ -22,8 +22,8 @@ type Event struct {
 	Venue   string
 	Short   string
 	Long    string
-	Start   time.Time
-	Finish  time.Time
+	Start   *time.Time
+	Finish  *time.Time
 }
 
 // Schedule is an implementation of ScheduleStorage
@@ -65,7 +65,7 @@ func (s *Schedule) GetEventsByTypeAndSubtype(kind, subkind string) []Event {
 func (s *Schedule) GetCurrentEventsByType(kind string, now time.Time) []Event {
 	events := make([]Event, 0, len(s.events[kind]))
 	for _, event := range s.events[kind] {
-		if event.Start.Before(now) && event.Finish.After(now) {
+		if (event.Start == nil || event.Start.Before(now)) && (event.Finish == nil || event.Finish.After(now)) {
 			events = append(events, event)
 		}
 	}
@@ -87,7 +87,7 @@ func (s *Schedule) GetNextEventsByType(kind string, now time.Time, interval time
 func (s *Schedule) GetDayEventsByType(kind string) []Event {
 	events := make([]Event, 0, len(s.events[kind]))
 	for _, event := range s.events[kind] {
-		if event.Start.Before(s.nightCutoff) {
+		if event.Start == nil || event.Start.Before(s.nightCutoff) {
 			events = append(events, event)
 		}
 	}
@@ -98,7 +98,7 @@ func (s *Schedule) GetDayEventsByType(kind string) []Event {
 func (s *Schedule) GetNightEventsByType(kind string) []Event {
 	events := make([]Event, 0, len(s.events[kind]))
 	for _, event := range s.events[kind] {
-		if event.Finish.After(s.nightCutoff) {
+		if event.Finish == nil || event.Finish.After(s.nightCutoff) {
 			events = append(events, event)
 		}
 	}
