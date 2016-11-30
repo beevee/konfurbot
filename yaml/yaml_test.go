@@ -58,7 +58,12 @@ events:
 
   - type: fun
     short: Боулинг
-    venue: Возле лифтов`)
+    venue: Возле лифтов
+
+  - type: fun
+    short: Ночная забава
+    start: 21:00
+    finish: 02:00`)
 
 		Convey("и мы наполнили этим расписанием сторадж", func() {
 			var start, finish time.Time
@@ -129,6 +134,15 @@ events:
 				Type:   "fun",
 				Venue:  "Возле лифтов",
 				Short:  "Боулинг",
+				Start:  start,
+				Finish: finish,
+			})
+
+			start, _ = time.Parse("15:04 02.01.2006", "21:00 29.11.2016")
+			finish, _ = time.Parse("15:04 02.01.2006", "02:00 30.11.2016")
+			mockStorage.EXPECT().AddEvent(konfurbot.Event{
+				Type:   "fun",
+				Short:  "Ночная забава",
 				Start:  start,
 				Finish: finish,
 			})
