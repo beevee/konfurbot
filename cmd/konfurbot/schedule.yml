@@ -478,3 +478,188 @@ events:
     venue: 6 этаж
     start: 22:00
     finish: 01:00
+
+  - type: transfer
+    subtype: main
+    short: Геологическая - ШР
+    start: 7:20
+
+  - type: transfer
+    subtype: main
+    short: Геологическая - ШР
+    start: 8:00
+
+  - type: transfer
+    subtype: main
+    short: Геологическая - ШР
+    start: 8:15
+
+  - type: transfer
+    subtype: color
+    short: УрФУ - ШР
+    start: 8:20
+
+  - type: transfer
+    subtype: color
+    short: Ботаника - ШР
+    start: 8:20
+
+  - type: transfer
+    subtype: main
+    short: Геологическая - ШР
+    start: 8:30
+
+  - type: transfer
+    subtype: color
+    short: Академический - ШР
+    start: 8:30
+
+  - type: transfer
+    subtype: color
+    short: УрФУ - ШР
+    start: 8:50
+
+  - type: transfer
+    subtype: main
+    short: Геологическая - ШР
+    start: 9:00
+
+  - type: transfer
+    subtype: color
+    short: Академический - ШР
+    start: 9:00
+
+  - type: transfer
+    subtype: color
+    short: Автовокзал - ШР
+    start: 9:05
+
+  - type: transfer
+    subtype: color
+    short: ВИЗ - ШР
+    start: 9:10
+
+  - type: transfer
+    subtype: main
+    short: Геологическая - ШР
+    start: 9:10
+
+  - type: transfer
+    subtype: color
+    short: Ботаника - ШР
+    start: 9:20
+
+  - type: transfer
+    subtype: color
+    short: УрФУ - ШР
+    start: 9:20
+
+  - type: transfer
+    subtype: main
+    short: Геологическая - ШР
+    start: 9:25
+
+  - type: transfer
+    subtype: main
+    short: ШР - Геологическая
+    start: 19:45
+
+  - type: transfer
+    subtype: main
+    short: ШР - Геологическая
+    start: 20:00
+
+  - type: transfer
+    subtype: color
+    short: ШР - Ботаника
+    start: 20:00
+
+  - type: transfer
+    subtype: color
+    short: ШР - Автовокзал
+    start: 20:00
+
+  - type: transfer
+    subtype: color
+    short: ШР - Академический
+    start: 20:00
+
+  - type: transfer
+    subtype: color
+    short: ШР - УрФУ
+    start: 20:00
+
+  - type: transfer
+    subtype: main
+    short: ШР - Геологическая
+    start: 20:20
+
+  - type: transfer
+    subtype: main
+    short: ШР - Геологическая
+    start: 20:50
+
+  - type: transfer
+    subtype: main
+    short: ШР - Геологическая
+    start: 21:00
+
+  - type: transfer
+    subtype: main
+    short: ШР - Геологическая
+    start: 22:15
+
+  - type: transfer
+    subtype: main
+    short: ШР - Геологическая
+    start: 22:45
+
+  - type: transfer
+    subtype: main
+    short: ШР - Геологическая
+    start: 23:30
+
+  - type: transfer
+    subtype: main
+    short: ШР - Геологическая
+    start: 00:00
+
+  - type: transfer
+    subtype: main
+    short: ШР - Геологическая
+    start: 00:30
+
+  - type: transfer
+    subtype: main
+    short: ШР - Геологическая
+    start: 01:00
+
+  - type: transfer
+    subtype: color
+    short: ШР - Ботаника
+    start: 01:00
+
+  - type: transfer
+    subtype: color
+    short: ШР - Автовокзал
+    start: 01:00
+
+  - type: transfer
+    subtype: color
+    short: ШР - УрФУ
+    start: 01:00
+
+  - type: transfer
+    subtype: color
+    short: ШР - ВИЗ
+    start: 01:00
+
+  - type: transfer
+    subtype: color
+    short: ШР - Академический
+    start: 01:00
+
+  - type: transfer
+    subtype: main
+    short: ШР - Геологическая
+    start: 01:30
