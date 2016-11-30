@@ -7,25 +7,20 @@ events:
     finish: 10:00
 
   - type: food
-    short: Обед
+    short: Обед (1 и 6 этажи)
     start: 12:00
-    finish: 13:00
+    finish: 13:30
 
   - type: food
-    short: Кофе-брейк
-    start: 14:30
-    finish: 15:00
-
+    short: Ужин (1 и 6 этажи)
+    start: 19:40
+    finish: 20:30
+	
   - type: food
-    short: Кофе-брейк
-    start: 16:30
-    finish: 17:00
-
-  - type: food
-    short: Ужин
-    start: 19:30
-    finish: 20:00
-
+    short: Фуршет
+    start: 22:00
+    finish: 01:00
+	
   - type: talk
     subtype: talk
     speaker: Александр Казаков
