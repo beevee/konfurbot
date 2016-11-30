@@ -46,9 +46,9 @@ func TestTelegram(t *testing.T) {
 			Convey("пользователь спрашивает про еду (у еды есть место проведения, но нет спикера)", func() {
 				mockStorage.EXPECT().GetEventsByType("food").Return([]konfurbot.Event{
 					konfurbot.Event{Type: "food", Short: "お好み焼き", Venue: "Бар", Start: &start, Finish: &finish},
-					konfurbot.Event{Type: "food", Short: "焼き鳥", Venue: "Кафе", Start: &start, Finish: &finish},
+					konfurbot.Event{Type: "food", Short: "焼き鳥", Long: "Вегетарианцам накроют на крыше паркинга", Venue: "Кафе", Start: &start, Finish: &finish},
 				})
-				mockTelebot.EXPECT().SendMessage(chat, "17:00 — 19:00 [Бар]: お好み焼き\n17:00 — 19:00 [Кафе]: 焼き鳥\n",
+				mockTelebot.EXPECT().SendMessage(chat, "17:00 — 19:00 [Бар]: お好み焼き\n17:00 — 19:00 [Кафе]: 焼き鳥\nВегетарианцам накроют на крыше паркинга\n\n",
 					hasButtons("🌶 Еда", "🔥 Доклады / МК", "🍾 Развлечения", "🚜 Трансфер"))
 				bot.handleMessage(telebot.Message{Chat: chat, Text: "🌶 Еда"})
 			})

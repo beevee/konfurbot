@@ -135,7 +135,7 @@ func initStateMachine() *fsm.FSM {
 
 			foodCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
 				events := bot.ScheduleStorage.GetEventsByType("food")
-				return bot.telebot.SendMessage(chat, makeResponseFromEvents(events, false), stateMessageOptions[e.Dst])
+				return bot.telebot.SendMessage(chat, makeResponseFromEvents(events, true), stateMessageOptions[e.Dst])
 			}),
 
 			talkCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
@@ -248,7 +248,7 @@ func makeResponseFromEvents(events []konfurbot.Event, long bool) string {
 
 		response += "\n"
 
-		if long {
+		if long && event.Long != "" {
 			response += fmt.Sprintf("%s\n\n", event.Long)
 		}
 	}
