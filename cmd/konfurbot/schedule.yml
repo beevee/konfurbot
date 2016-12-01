@@ -583,17 +583,17 @@ events:
   - type: transfer
     subtype: color
     short: ШР - Автовокзал
-    start: 20:00
+    start: 20:02
 
   - type: transfer
     subtype: color
     short: ШР - Академический
-    start: 20:00
+    start: 20:04
 
   - type: transfer
     subtype: color
     short: ШР - УрФУ
-    start: 20:00
+    start: 20:06
 
   - type: transfer
     subtype: main
@@ -648,22 +648,22 @@ events:
   - type: transfer
     subtype: color
     short: ШР - Автовокзал
-    start: 01:00
-
-  - type: transfer
-    subtype: color
-    short: ШР - УрФУ
-    start: 01:00
-
-  - type: transfer
-    subtype: color
-    short: ШР - ВИЗ
-    start: 01:00
+    start: 01:02
 
   - type: transfer
     subtype: color
     short: ШР - Академический
-    start: 01:00
+    start: 01:04
+
+  - type: transfer
+    subtype: color
+    short: ШР - УрФУ
+    start: 01:06
+
+  - type: transfer
+    subtype: color
+    short: ШР - ВИЗ
+    start: 01:08
 
   - type: transfer
     subtype: main
