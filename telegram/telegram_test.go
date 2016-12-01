@@ -162,6 +162,113 @@ func TestTelegram(t *testing.T) {
 				})
 			})
 
+			Convey("пользователь спрашивает про мастер-классы", func() {
+				mockTelebot.EXPECT().SendMessage(chat, "Окей, какие мастер-классы?",
+					hasButtons("▶️ Сейчас", "⏭ Скоро", "🔢 Все"))
+				bot.handleMessage(telebot.Message{Chat: chat, Text: "💥 Мастер-классы"})
+
+				Convey("которые идут сейчас", func() {
+					mockTelebot.EXPECT().SendMessage(chat, "Их может оказаться довольно много. Тизеры надо?",
+						hasButtons("🌪 С тизерами", "🌴 Без тизеров"))
+					bot.handleMessage(telebot.Message{Chat: chat, Text: "▶️ Сейчас"})
+
+					Convey("с тизерами, и что-то сейчас идет", func() {
+						mockStorage.EXPECT().GetCurrentEventsByType("master", gomock.Any()).Return([]konfurbot.Event{
+							konfurbot.Event{Type: "master", Short: "WAT", Long: "WAAAAT", Start: &start, Finish: &finish},
+							konfurbot.Event{Type: "master", Short: "WAT 2", Long: "WAAAAT 22", Start: &start, Finish: &finish},
+						})
+						mockTelebot.EXPECT().SendMessage(chat, "17:00 — 19:00: *WAT*\nWAAAAT\n\n17:00 — 19:00: *WAT 2*\nWAAAAT 22\n\n",
+							hasButtons("🌶 Еда", "🔥 Доклады", "💥 Мастер-классы", "🍾 Развлечения", "🚜 Трансфер"))
+						bot.handleMessage(telebot.Message{Chat: chat, Text: "🌪 С тизерами"})
+					})
+
+					Convey("с тизерами, и сейчас ничего не идет", func() {
+						mockStorage.EXPECT().GetCurrentEventsByType("master", gomock.Any()).Return([]konfurbot.Event{})
+						mockTelebot.EXPECT().SendMessage(chat, "Ничего нет :(",
+							hasButtons("🌶 Еда", "🔥 Доклады", "💥 Мастер-классы", "🍾 Развлечения", "🚜 Трансфер"))
+						bot.handleMessage(telebot.Message{Chat: chat, Text: "🌴 Без тизеров"})
+					})
+
+					Convey("без тизеров, и сейчас что-то идет", func() {
+						mockStorage.EXPECT().GetCurrentEventsByType("master", gomock.Any()).Return([]konfurbot.Event{
+							konfurbot.Event{Type: "master", Short: "WAT", Long: "WAAAAT", Start: &start, Finish: &finish},
+							konfurbot.Event{Type: "master", Short: "WAT 2", Long: "WAAAAT 22", Start: &start, Finish: &finish},
+						})
+						mockTelebot.EXPECT().SendMessage(chat, "17:00 — 19:00: *WAT*\n\n17:00 — 19:00: *WAT 2*\n\n",
+							hasButtons("🌶 Еда", "🔥 Доклады", "💥 Мастер-классы", "🍾 Развлечения", "🚜 Трансфер"))
+						bot.handleMessage(telebot.Message{Chat: chat, Text: "🌴 Без тизеров"})
+					})
+
+					Convey("пользователь пишет нам ерунду", func() {
+						mockTelebot.EXPECT().SendMessage(chat, "Я не понимаю эту команду. Давай попробуем еще раз с начала.",
+							hasButtons("🌶 Еда", "🔥 Доклады", "💥 Мастер-классы", "🍾 Развлечения", "🚜 Трансфер"))
+						bot.handleMessage(telebot.Message{Chat: chat, Text: "gibberish"})
+					})
+				})
+
+				Convey("которые начнутся в ближайший час", func() {
+					mockTelebot.EXPECT().SendMessage(chat, "Их может оказаться довольно много. Тизеры надо?",
+						hasButtons("🌪 С тизерами", "🌴 Без тизеров"))
+					bot.handleMessage(telebot.Message{Chat: chat, Text: "⏭ Скоро"})
+
+					Convey("с тизерами", func() {
+						mockStorage.EXPECT().GetNextEventsByType("master", gomock.Any(), time.Hour).Return([]konfurbot.Event{
+							konfurbot.Event{Type: "master", Short: "WAT", Long: "WAAAAT", Start: &start, Finish: &finish},
+							konfurbot.Event{Type: "master", Short: "WAT 2", Long: "WAAAAT 22", Start: &start, Finish: &finish},
+						})
+						mockTelebot.EXPECT().SendMessage(chat, "17:00 — 19:00: *WAT*\nWAAAAT\n\n17:00 — 19:00: *WAT 2*\nWAAAAT 22\n\n",
+							hasButtons("🌶 Еда", "🔥 Доклады", "💥 Мастер-классы", "🍾 Развлечения", "🚜 Трансфер"))
+						bot.handleMessage(telebot.Message{Chat: chat, Text: "🌪 С тизерами"})
+					})
+
+					Convey("без тизеров", func() {
+						mockStorage.EXPECT().GetNextEventsByType("master", gomock.Any(), time.Hour).Return([]konfurbot.Event{
+							konfurbot.Event{Type: "master", Short: "WAT", Long: "WAAAAT", Start: &start, Finish: &finish},
+							konfurbot.Event{Type: "master", Short: "WAT 2", Long: "WAAAAT 22", Start: &start, Finish: &finish},
+						})
+						mockTelebot.EXPECT().SendMessage(chat, "17:00 — 19:00: *WAT*\n\n17:00 — 19:00: *WAT 2*\n\n",
+							hasButtons("🌶 Еда", "🔥 Доклады", "💥 Мастер-классы", "🍾 Развлечения", "🚜 Трансфер"))
+						bot.handleMessage(telebot.Message{Chat: chat, Text: "🌴 Без тизеров"})
+					})
+
+					Convey("пользователь пишет нам ерунду", func() {
+						mockTelebot.EXPECT().SendMessage(chat, "Я не понимаю эту команду. Давай попробуем еще раз с начала.",
+							hasButtons("🌶 Еда", "🔥 Доклады", "💥 Мастер-классы", "🍾 Развлечения", "🚜 Трансфер"))
+						bot.handleMessage(telebot.Message{Chat: chat, Text: "gibberish"})
+					})
+				})
+
+				Convey("все (у них есть спикер, но нет места проведения)", func() {
+					mockStorage.EXPECT().GetEventsByType("master").Return([]konfurbot.Event{
+						konfurbot.Event{
+							Type:    "talk",
+							Speaker: "Александр Казаков",
+							Short:   "WAT",
+							Long:    "WAAAAT",
+							Start:   &start,
+							Finish:  &finish,
+						},
+						konfurbot.Event{
+							Type:    "talk",
+							Speaker: "Василий Петров",
+							Short:   "WAT 2",
+							Long:    "WAAAAT 22",
+							Start:   &start,
+							Finish:  &finish,
+						},
+					})
+					mockTelebot.EXPECT().SendMessage(chat, "17:00 — 19:00: *WAT* (Александр Казаков)\n\n17:00 — 19:00: *WAT 2* (Василий Петров)\n\n",
+						hasButtons("🌶 Еда", "🔥 Доклады", "💥 Мастер-классы", "🍾 Развлечения", "🚜 Трансфер"))
+					bot.handleMessage(telebot.Message{Chat: chat, Text: "🔢 Все"})
+				})
+
+				Convey("пользователь пишет нам ерунду", func() {
+					mockTelebot.EXPECT().SendMessage(chat, "Я не понимаю эту команду. Давай попробуем еще раз с начала.",
+						hasButtons("🌶 Еда", "🔥 Доклады", "💥 Мастер-классы", "🍾 Развлечения", "🚜 Трансфер"))
+					bot.handleMessage(telebot.Message{Chat: chat, Text: "gibberish"})
+				})
+			})
+
 			Convey("пользователь спрашивает про развлечения", func() {
 				mockTelebot.EXPECT().SendMessage(chat, "Утром или вечером?",
 					hasButtons("🍼 Утром", "🍸 Вечером"))
@@ -195,7 +302,7 @@ func TestTelegram(t *testing.T) {
 			})
 
 			Convey("пользователь спрашивает про трансфер", func() {
-				mockTelebot.EXPECT().SendMessage(chat, "Окей, куда поедем?",
+				mockTelebot.EXPECT().SendMessage(chat, "Окей, на каком маршруте поедем?",
 					hasButtons("🏎 Дежурный", "🚲 Цветные"))
 				bot.handleMessage(telebot.Message{Chat: chat, Text: "🚜 Трансфер"})
 
