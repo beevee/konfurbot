@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"sort"
 	"testing"
@@ -17,7 +18,37 @@ import (
 	"github.com/beevee/konfurbot/mock"
 )
 
-func TestTelegram(t *testing.T) {
+func TestTelegramIntegration(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	Convey("Попробуем запустить и остановить бота (этот тест не будет работать без настоящего токена в переменной окружения KONFURBOT_TEST_TOKEN)", t, func() {
+		bot := &Bot{
+			ScheduleStorage: mock.NewMockScheduleStorage(ctrl),
+			TelegramToken:   os.Getenv("KONFURBOT_TEST_TOKEN"),
+			Logger:          log.NewNopLogger(),
+		}
+
+		err := bot.Start()
+		So(err, ShouldBeNil)
+
+		err = bot.Stop()
+		So(err, ShouldBeNil)
+	})
+
+	Convey("Попробуем запустить бота с неправильным токеном", t, func() {
+		bot := &Bot{
+			ScheduleStorage: mock.NewMockScheduleStorage(ctrl),
+			TelegramToken:   "123456",
+			Logger:          log.NewNopLogger(),
+		}
+
+		err := bot.Start()
+		So(err, ShouldNotBeNil)
+	})
+}
+
+func TestUserInteraction(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
