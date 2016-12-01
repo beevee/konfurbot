@@ -16,14 +16,12 @@ const (
 
 	foodCommand = "🌶 Еда"
 
-	talkCommand       = "🔥 Доклады"
-	talkNowCommand    = "Которые идут сейчас"
-	talkNextCommand   = "Которые начнутся скоро"
-	talkAllCommand    = "Все"
-	talkLongCommand   = "С тизерами (простыня!)"
-	talkShortCommand  = "Без тизеров (ура! краткость!)"
-	talkTalkCommand   = "Доклады"
-	talkMasterCommand = "Мастер-классы"
+	talkCommand      = "🔥 Доклады"
+	talkNowCommand   = "🔛 Сейчас"
+	talkNextCommand  = "🔜 Скоро"
+	talkAllCommand   = "📜 Все"
+	talkLongCommand  = "☠ С тизерами"
+	talkShortCommand = "🕊 Без тизеров"
 
 	masterCommand = "💥 Мастер-классы"
 
@@ -32,10 +30,10 @@ const (
 	funNightCommand = "🍸 Вечером"
 
 	transferCommand      = "🚜 Трансфер"
-	transferMainCommand  = "🏎 До Геологической"
-	transferColorCommand = "🚲 В другие районы"
-	transferNextCommand  = "Ближайшие"
-	transferAllCommand   = "Все рейсы"
+	transferMainCommand  = "🏎 Дежурный"
+	transferColorCommand = "🚲 Цветные"
+	transferNextCommand  = "🔜 Ближайшие"
+	transferAllCommand   = "📜 Все рейсы"
 
 	welcomeState       = "welcome"
 	startState         = "start"
@@ -65,9 +63,7 @@ var stateMessageOptions = map[string]*telebot.SendOptions{
 	talkState: &telebot.SendOptions{
 		ReplyMarkup: telebot.ReplyMarkup{
 			CustomKeyboard: [][]string{
-				[]string{talkNowCommand},
-				[]string{talkNextCommand},
-				[]string{talkAllCommand},
+				[]string{talkNowCommand, talkNextCommand, talkAllCommand},
 			},
 			ResizeKeyboard: true,
 		},
@@ -77,8 +73,7 @@ var stateMessageOptions = map[string]*telebot.SendOptions{
 	talkNowState: &telebot.SendOptions{
 		ReplyMarkup: telebot.ReplyMarkup{
 			CustomKeyboard: [][]string{
-				[]string{talkLongCommand},
-				[]string{talkShortCommand},
+				[]string{talkLongCommand, talkShortCommand},
 			},
 			ResizeKeyboard: true,
 		},
@@ -88,8 +83,7 @@ var stateMessageOptions = map[string]*telebot.SendOptions{
 	talkNextState: &telebot.SendOptions{
 		ReplyMarkup: telebot.ReplyMarkup{
 			CustomKeyboard: [][]string{
-				[]string{talkLongCommand},
-				[]string{talkShortCommand},
+				[]string{talkLongCommand, talkShortCommand},
 			},
 			ResizeKeyboard: true,
 		},
