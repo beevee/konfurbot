@@ -15,6 +15,8 @@ func TestYaml(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
+	tz, _ := time.LoadLocation("Asia/Yekaterinburg")
+
 	Convey("Нам передали валидный YAML с расписанием", t, func() {
 		sYaml := []byte(`date: 29.11.2016
 night: 20:00
@@ -68,11 +70,11 @@ events:
 		Convey("и мы наполнили этим расписанием сторадж", func() {
 			mockStorage := mock.NewMockScheduleStorage(ctrl)
 
-			nightCutoff, _ := time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
+			nightCutoff, _ := time.ParseInLocation("15:04 02.01.2006", "20:00 29.11.2016", tz)
 			mockStorage.EXPECT().SetNightCutoff(nightCutoff)
 
-			start, _ := time.Parse("15:04 02.01.2006", "09:00 29.11.2016")
-			finish, _ := time.Parse("15:04 02.01.2006", "10:00 29.11.2016")
+			start, _ := time.ParseInLocation("15:04 02.01.2006", "09:00 29.11.2016", tz)
+			finish, _ := time.ParseInLocation("15:04 02.01.2006", "10:00 29.11.2016", tz)
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "food",
 				Short:  "Утренний кофе",
@@ -81,8 +83,8 @@ events:
 				Finish: &finish,
 			})
 
-			start2, _ := time.Parse("15:04 02.01.2006", "14:30 29.11.2016")
-			finish2, _ := time.Parse("15:04 02.01.2006", "15:00 29.11.2016")
+			start2, _ := time.ParseInLocation("15:04 02.01.2006", "14:30 29.11.2016", tz)
+			finish2, _ := time.ParseInLocation("15:04 02.01.2006", "15:00 29.11.2016", tz)
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "food",
 				Short:  "Кофе-брейк",
@@ -91,8 +93,8 @@ events:
 				Finish: &finish2,
 			})
 
-			start3, _ := time.Parse("15:04 02.01.2006", "19:30 29.11.2016")
-			finish3, _ := time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
+			start3, _ := time.ParseInLocation("15:04 02.01.2006", "19:30 29.11.2016", tz)
+			finish3, _ := time.ParseInLocation("15:04 02.01.2006", "20:00 29.11.2016", tz)
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "food",
 				Short:  "Ужин",
@@ -101,8 +103,8 @@ events:
 				Finish: &finish3,
 			})
 
-			start4, _ := time.Parse("15:04 02.01.2006", "19:30 29.11.2016")
-			finish4, _ := time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
+			start4, _ := time.ParseInLocation("15:04 02.01.2006", "19:30 29.11.2016", tz)
+			finish4, _ := time.ParseInLocation("15:04 02.01.2006", "20:00 29.11.2016", tz)
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:    "talk",
 				Subtype: "talk",
@@ -114,8 +116,8 @@ events:
 				Finish:  &finish4,
 			})
 
-			start5, _ := time.Parse("15:04 02.01.2006", "11:30 29.11.2016")
-			finish5, _ := time.Parse("15:04 02.01.2006", "14:25 29.11.2016")
+			start5, _ := time.ParseInLocation("15:04 02.01.2006", "11:30 29.11.2016", tz)
+			finish5, _ := time.ParseInLocation("15:04 02.01.2006", "14:25 29.11.2016", tz)
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:    "talk",
 				Subtype: "master",
@@ -133,8 +135,8 @@ events:
 				Short: "Боулинг",
 			})
 
-			start6, _ := time.Parse("15:04 02.01.2006", "01:00 30.11.2016")
-			finish6, _ := time.Parse("15:04 02.01.2006", "02:00 30.11.2016")
+			start6, _ := time.ParseInLocation("15:04 02.01.2006", "01:00 30.11.2016", tz)
+			finish6, _ := time.ParseInLocation("15:04 02.01.2006", "02:00 30.11.2016", tz)
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:   "fun",
 				Short:  "Ночная забава",
@@ -142,7 +144,7 @@ events:
 				Finish: &finish6,
 			})
 
-			err := FillScheduleStorage(mockStorage, sYaml)
+			err := FillScheduleStorage(mockStorage, sYaml, tz)
 			So(err, ShouldBeNil)
 		})
 	})
@@ -158,7 +160,7 @@ events:
 
 		Convey("поэтому мы не смогли наполнить сторадж", func() {
 			mockStorage := mock.NewMockScheduleStorage(ctrl)
-			err := FillScheduleStorage(mockStorage, sYaml)
+			err := FillScheduleStorage(mockStorage, sYaml, tz)
 			So(err, ShouldNotBeNil)
 		})
 	})
@@ -175,10 +177,10 @@ events:
 		Convey("поэтому мы не смогли наполнить сторадж", func() {
 			mockStorage := mock.NewMockScheduleStorage(ctrl)
 
-			nightCutoff, _ := time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
+			nightCutoff, _ := time.ParseInLocation("15:04 02.01.2006", "20:00 29.11.2016", tz)
 			mockStorage.EXPECT().SetNightCutoff(nightCutoff)
 
-			err := FillScheduleStorage(mockStorage, sYaml)
+			err := FillScheduleStorage(mockStorage, sYaml, tz)
 			So(err, ShouldNotBeNil)
 		})
 	})
@@ -195,10 +197,10 @@ events:
 		Convey("поэтому мы не смогли наполнить сторадж", func() {
 			mockStorage := mock.NewMockScheduleStorage(ctrl)
 
-			nightCutoff, _ := time.Parse("15:04 02.01.2006", "20:00 29.11.2016")
+			nightCutoff, _ := time.ParseInLocation("15:04 02.01.2006", "20:00 29.11.2016", tz)
 			mockStorage.EXPECT().SetNightCutoff(nightCutoff)
 
-			err := FillScheduleStorage(mockStorage, sYaml)
+			err := FillScheduleStorage(mockStorage, sYaml, tz)
 			So(err, ShouldNotBeNil)
 		})
 	})
@@ -214,7 +216,7 @@ events:
 
 		Convey("поэтому мы не смогли наполнить сторадж", func() {
 			mockStorage := mock.NewMockScheduleStorage(ctrl)
-			err := FillScheduleStorage(mockStorage, sYaml)
+			err := FillScheduleStorage(mockStorage, sYaml, tz)
 			So(err, ShouldNotBeNil)
 		})
 	})
@@ -224,7 +226,7 @@ events:
 
 		Convey("поэтому мы не смогли наполнить сторадж", func() {
 			mockStorage := mock.NewMockScheduleStorage(ctrl)
-			err := FillScheduleStorage(mockStorage, sYaml)
+			err := FillScheduleStorage(mockStorage, sYaml, tz)
 			So(err, ShouldNotBeNil)
 		})
 	})

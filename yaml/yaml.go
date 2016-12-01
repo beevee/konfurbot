@@ -26,18 +26,18 @@ type Schedule struct {
 }
 
 // FillScheduleStorage fills schedule storage with events parsed from YAML file
-func FillScheduleStorage(storage konfurbot.ScheduleStorage, file []byte) error {
+func FillScheduleStorage(storage konfurbot.ScheduleStorage, file []byte, tz *time.Location) error {
 	var parsedSchedule Schedule
 	if err := yaml.Unmarshal(file, &parsedSchedule); err != nil {
 		return err
 	}
 
-	baseDate, err := time.Parse("02.01.2006", parsedSchedule.Date)
+	baseDate, err := time.ParseInLocation("02.01.2006", parsedSchedule.Date, tz)
 	if err != nil {
 		return err
 	}
 
-	nightCutoff, err := time.Parse("15:04", parsedSchedule.Night)
+	nightCutoff, err := time.ParseInLocation("15:04", parsedSchedule.Night, tz)
 	if err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func FillScheduleStorage(storage konfurbot.ScheduleStorage, file []byte) error {
 		if parsedEvent.Start == "" {
 			start = nil
 		} else {
-			startTime, shift, err := parseRichTime(parsedEvent.Start)
+			startTime, shift, err := parseRichTime(parsedEvent.Start, tz)
 			if err != nil {
 				return err
 			}
@@ -63,7 +63,7 @@ func FillScheduleStorage(storage konfurbot.ScheduleStorage, file []byte) error {
 		if parsedEvent.Finish == "" {
 			finish = nil
 		} else {
-			finishTime, shift, err := parseRichTime(parsedEvent.Finish)
+			finishTime, shift, err := parseRichTime(parsedEvent.Finish, tz)
 			if err != nil {
 				return err
 			}
@@ -90,13 +90,13 @@ func FillScheduleStorage(storage konfurbot.ScheduleStorage, file []byte) error {
 	return nil
 }
 
-func parseRichTime(timeString string) (time.Time, bool, error) {
+func parseRichTime(timeString string, tz *time.Location) (time.Time, bool, error) {
 	var timeShift bool
 	if strings.HasSuffix(timeString, "+") {
 		timeString = timeString[:len(timeString)-1]
 		timeShift = true
 	}
-	timeParsed, err := time.Parse("15:04", timeString)
+	timeParsed, err := time.ParseInLocation("15:04", timeString, tz)
 	if err != nil {
 		return time.Time{}, false, err
 	}

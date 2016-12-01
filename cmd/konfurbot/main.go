@@ -46,13 +46,19 @@ func main() {
 
 	logger.Log("msg", "starting program", "pid", os.Getpid())
 
+	tz, err := time.LoadLocation(opts.Timezone)
+	if err != nil {
+		logger.Log("msg", "failed to recognize timezone", "error", err)
+		os.Exit(1)
+	}
+
 	scheduleYAMLContents, err := ioutil.ReadFile(opts.ScheduleFile)
 	if err != nil {
 		logger.Log("msg", "failed to open schedule YAML file", "error", err)
 		os.Exit(1)
 	}
 	scheduleStorage := &konfurbot.Schedule{}
-	err = yaml.FillScheduleStorage(scheduleStorage, scheduleYAMLContents)
+	err = yaml.FillScheduleStorage(scheduleStorage, scheduleYAMLContents, tz)
 	if err != nil {
 		logger.Log("msg", "failed to parse schedule YAML", "error", err)
 		os.Exit(1)
@@ -62,11 +68,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	tz, err := time.LoadLocation(opts.Timezone)
-	if err != nil {
-		logger.Log("msg", "failed to recognize timezone", "error", err)
-		os.Exit(1)
-	}
 	bot := &telegram.Bot{
 		ScheduleStorage: scheduleStorage,
 		TelegramToken:   opts.TelegramToken,
