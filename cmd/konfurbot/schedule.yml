@@ -29,7 +29,6 @@ events:
     finish: 01:00+
 
   - type: talk
-    subtype: talk
     speaker: Александр Голубев, Игорь Устюжанин
     venue: Конференц-зал
     short: Открытие, новости УР
@@ -37,7 +36,6 @@ events:
     finish: 10:20
 
   - type: talk
-    subtype: talk
     speaker: Игорь Устюжанин, Иван Дашкевич, Павел Егоров
     venue: Конференц-зал
     short: "Модель развития инженеров-программистов: от стажера до звезды"
@@ -49,7 +47,6 @@ events:
     finish: 11:00
 
   - type: talk
-    subtype: talk
     speaker: Илья Локтионов
     venue: Конференц-зал
     short: Байки от инфраструктуры
@@ -62,7 +59,6 @@ events:
     finish: 11:30
 
   - type: talk
-    subtype: talk
     speaker: Юлия Закс, Кирилл Раткин, Сергей Соловьев
     venue: Кафе
     short: Про рост тестировщиков, аналитиков, проектировщиков
@@ -74,7 +70,6 @@ events:
     finish: 11:30
 
   - type: talk
-    subtype: talk
     speaker: Игорь Чевдарь
     venue: Конференц-зал
     short: Модификация кода .NET в рантайме
@@ -88,7 +83,6 @@ events:
     finish: 12:00
 
   - type: talk
-    subtype: talk
     speaker: Иван Голов, Алексей Хворост
     venue: Кафе
     short: Новые офисы разработки
@@ -99,8 +93,7 @@ events:
     start: 11:30
     finish: 12:00
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Иван Ильин
     venue: Переговорка 311
     short: Круглый стол по мобильной разработке
@@ -114,8 +107,7 @@ events:
     start: 13:30
     finish: 15:00
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Светлана Ратнер, Анастасия Купцова, Анастасия Черникова, Эмилия Городовых
     venue: Учебные классы 1, 2
     short: Активно слушать
@@ -126,8 +118,7 @@ events:
     start: 13:30
     finish: 15:00
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Екатерина Широкова
     venue: Кафе
     short: Пиши, сокращай. Редакторский мастер-класс для неписателей.
@@ -142,8 +133,7 @@ events:
     start: 13:30
     finish: 15:00
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Ирина Шухман
     venue: Комната 606
     short: Картоха-принт!
@@ -154,8 +144,7 @@ events:
     start: 13:30
     finish: 15:00
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Игорь Чевдарь
     venue: Спортзал №2
     short: Модификация кода .NET в рантайме
@@ -168,7 +157,6 @@ events:
     finish: 15:00
 
   - type: talk
-    subtype: talk
     speaker: Валерий Кузьмин
     venue: Конференц-зал
     short: С++JS=?
@@ -179,7 +167,6 @@ events:
     finish: 14:15
 
   - type: talk
-    subtype: talk
     speaker: Теймураз Хазамов
     venue: Конференц-зал
     short: Реактивное программирование с Observable
@@ -193,7 +180,6 @@ events:
     finish: 15:00
 
   - type: talk
-    subtype: talk
     speaker: Александр Казаков
     venue: Конференц-зал
     short: Что делает умный инженер, когда у него падает сервис
@@ -208,7 +194,6 @@ events:
     finish: 15:30
 
   - type: talk
-    subtype: talk
     speaker: Лев Долганов
     venue: Кафе
     short: Спрашивать или потрошить?
@@ -221,7 +206,6 @@ events:
     finish: 15:35
 
   - type: talk
-    subtype: talk
     speaker: Никита Бурлаков
     venue: Конференц-зал
     short: О паросочетаниях в графе разработчиков
@@ -234,7 +218,6 @@ events:
     finish: 15:45
 
   - type: talk
-    subtype: talk
     speaker: Светлана Копасова
     venue: Кафе
     short: Как мы исследовали пользователей продукта, которого нет
@@ -247,7 +230,6 @@ events:
     finish: 15:55
 
   - type: talk
-    subtype: talk
     speaker: Андрей Кун
     venue: Конференц-зал
     short: Инженерный подход к рефакторингу
@@ -261,7 +243,6 @@ events:
     finish: 16:15
 
   - type: talk
-    subtype: talk
     speaker: Екатерина Невелева
     venue: Кафе
     short: Что знает и о чем молчит Управление маркетинга
@@ -274,7 +255,6 @@ events:
     finish: 16:20
 
   - type: talk
-    subtype: talk
     speaker: Юрий Суслов
     venue: Конференц-зал
     short: Монитор ошибок или как можно прикладывать подорожник без смс и регистрации
@@ -285,7 +265,6 @@ events:
     finish: 16:30
 
   - type: talk
-    subtype: talk
     speaker: Лев Плинер
     venue: Кафе
     short: Что продажи могут рассказать о пользователях?
@@ -298,14 +277,12 @@ events:
     finish: 16:45
 
   - type: talk
-    subtype: talk
     venue: Конференц-зал
     short: Блиц-доклады
     start: 16:30
     finish: 16:45
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Теймураз Хазамов
     venue: Переговорка 308
     short: Не останавливайся на обещаниях. Наблюдай && Действуй!
@@ -317,8 +294,7 @@ events:
     start: 17:15
     finish: 18:45
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Вячеслав Овчинников
     venue: Конференц-зал, ч.1
     short: "Наглядные логи: разработчикам, аналитикам и всем, всем, всем."
@@ -333,8 +309,7 @@ events:
     start: 17:15
     finish: 18:45
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Игорь Чевдарь
     venue: Спортзал №2
     short: Модификация кода .NET в рантайме
@@ -346,8 +321,7 @@ events:
     start: 17:15
     finish: 18:45
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Андрей Кун
     venue: Учебный класс №1
     short: Инженерный подход к рефакторингу
@@ -360,8 +334,7 @@ events:
     start: 17:15
     finish: 18:45
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Павел Егоров
     venue: Учебный класс №2
     short: Firebase. Back-end не нужен!
@@ -371,8 +344,7 @@ events:
     start: 17:15
     finish: 18:45
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Александр Дельва, Дмитрий Якин
     venue: Конференц-зал, ч. 2
     short: Сломай свой продукт
@@ -384,8 +356,7 @@ events:
     start: 17:15
     finish: 18:45
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Григорий Назаров
     venue: Переговорка 404
     short: Продвинутое использование Git
@@ -396,8 +367,7 @@ events:
     start: 17:15
     finish: 18:45
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Ольга Кудрачёва
     venue: Переговорка 311
     short: Контур.Метрика. Инструкция по применению
@@ -408,7 +378,6 @@ events:
     finish: 18:45
 
   - type: talk
-    subtype: talk
     speaker: Ирина Спицына, Геннадий Викулов
     venue: Кафе
     short: Заказчики продукта — это лебедь, рак и щука. Как разогнать воз?
@@ -420,7 +389,6 @@ events:
     finish: 17:45
 
   - type: talk
-    subtype: talk
     speaker: Елизавета Булавина, Антон Рычков, Наталья Ферштатер, Василий Конев
     venue: Кафе
     short: Интеграция — это неравный брак. Как полюбить партнёра?
@@ -433,7 +401,6 @@ events:
     finish: 18:30
 
   - type: talk
-    subtype: talk
     speaker: Игорь Луканин
     venue: Кафе
     short: Пропасть между Малопрудной и НВ. Как научиться жить по регламенту?
@@ -445,7 +412,6 @@ events:
     finish: 18:45
 
   - type: talk
-    subtype: talk
     speaker: Дмитрий Мраморов, Игорь Устюжанин
     venue: Конференц-зал
     short: Стратегия компании
@@ -550,187 +516,150 @@ events:
     start: 22:00
     finish: 01:00+
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: Геологическая — ШР
     start: 7:20
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: Геологическая — ШР
     start: 8:00
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: Геологическая — ШР
     start: 8:15
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: УрФУ — ШР
     start: 8:20
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: Ботаника — ШР
     start: 8:20
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: Геологическая — ШР
     start: 8:30
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: Академический — ШР
     start: 8:30
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: УрФУ — ШР
     start: 8:50
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: Геологическая — ШР
     start: 9:00
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: Академический — ШР
     start: 9:00
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: Автовокзал — ШР
     start: 9:05
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: ВИЗ — ШР
     start: 9:10
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: Геологическая — ШР
     start: 9:10
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: Ботаника — ШР
     start: 9:20
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: УрФУ — ШР
     start: 9:20
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: Геологическая — ШР
     start: 9:25
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: ШР — Геологическая
     start: 19:45
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: ШР — Геологическая
     start: 20:00
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: ШР — Ботаника
     start: 20:00
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: ШР — Автовокзал
     start: 20:02
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: ШР — Академический
     start: 20:04
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: ШР — УрФУ
     start: 20:06
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: ШР — Геологическая
     start: 20:20
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: ШР — Геологическая
     start: 20:50
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: ШР — Геологическая
     start: 21:00
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: ШР — Геологическая
     start: 22:15
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: ШР — Геологическая
     start: 22:45
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: ШР — Геологическая
     start: 23:30
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: ШР — Геологическая
     start: 00:00+
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: ШР — Геологическая
     start: 00:30+
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: ШР — Геологическая
     start: 01:00+
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: ШР — Ботаника
     start: 01:00+
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: ШР — Автовокзал
     start: 01:02+
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: ШР — Академический
     start: 01:04+
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: ШР — УрФУ
     start: 01:06+
 
-  - type: transfer
-    subtype: color
+  - type: transfer_color
     short: ШР — ВИЗ
     start: 01:08+
 
-  - type: transfer
-    subtype: main
+  - type: transfer_main
     short: ШР — Геологическая
     start: 01:30+

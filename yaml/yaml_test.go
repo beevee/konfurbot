@@ -37,7 +37,6 @@ events:
     finish: 20:00
 
   - type: talk
-    subtype: talk
     speaker: Александр Казаков
     venue: Кафе
     short: Что делает умный инженер, когда у него падает сервис
@@ -47,8 +46,7 @@ events:
     start: 19:30
     finish: 20:00
 
-  - type: talk
-    subtype: master
+  - type: master
     speaker: Василий Петров
     venue: Переговорка 711
     short: Мастер-класс по приготовлению пиццы.
@@ -107,7 +105,6 @@ events:
 			finish4, _ := time.ParseInLocation("15:04 02.01.2006", "20:00 29.11.2016", tz)
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
 				Type:    "talk",
-				Subtype: "talk",
 				Speaker: "Александр Казаков",
 				Venue:   "Кафе",
 				Short:   "Что делает умный инженер, когда у него падает сервис",
@@ -119,8 +116,7 @@ events:
 			start5, _ := time.ParseInLocation("15:04 02.01.2006", "11:30 29.11.2016", tz)
 			finish5, _ := time.ParseInLocation("15:04 02.01.2006", "14:25 29.11.2016", tz)
 			mockStorage.EXPECT().AddEvent(konfurbot.Event{
-				Type:    "talk",
-				Subtype: "master",
+				Type:    "master",
 				Speaker: "Василий Петров",
 				Venue:   "Переговорка 711",
 				Short:   "Мастер-класс по приготовлению пиццы.",

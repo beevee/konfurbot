@@ -15,7 +15,6 @@ type Schedule struct {
 	Night  string `yaml:"night"`
 	Events []struct {
 		Type    string `yaml:"type"`
-		Subtype string `yaml:"subtype"`
 		Speaker string `yaml:"speaker"`
 		Venue   string `yaml:"venue"`
 		Short   string `yaml:"short"`
@@ -76,7 +75,6 @@ func FillScheduleStorage(storage konfurbot.ScheduleStorage, file []byte, tz *tim
 
 		event := konfurbot.Event{
 			Type:    parsedEvent.Type,
-			Subtype: parsedEvent.Subtype,
 			Speaker: parsedEvent.Speaker,
 			Venue:   parsedEvent.Venue,
 			Short:   parsedEvent.Short,
