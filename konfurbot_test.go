@@ -124,6 +124,21 @@ func TestSchedule(t *testing.T) {
 			})
 		})
 
+		Convey("а потом получаем ближайшие события определенного типа и подтипа", func() {
+			Convey("если они есть", func() {
+				talkEvents := schedule.GetNextEventsByTypeAndSubtype("talk", "talk", time.Now().Add(-time.Hour), time.Hour)
+
+				So(talkEvents, ShouldHaveLength, 1)
+				So(talkEvents[0], ShouldResemble, talk0)
+			})
+
+			Convey("если их нет", func() {
+				talkEvents := schedule.GetNextEventsByTypeAndSubtype("talk", "talk", time.Now(), time.Hour)
+
+				So(talkEvents, ShouldHaveLength, 0)
+			})
+		})
+
 		Convey("а потом получаем события, которые начинаются раньше определенного времени", func() {
 			funDayEvents := schedule.GetDayEventsByType("fun")
 

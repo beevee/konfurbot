@@ -234,6 +234,82 @@ func TestTelegram(t *testing.T) {
 				})
 			})
 
+			Convey("пользователь спрашивает про трансфер", func() {
+				mockTelebot.EXPECT().SendMessage(chat, "Окей, куда поедем?",
+					hasButtons("🏎 До Геологической", "🚲 В другие районы"))
+				bot.handleMessage(telebot.Message{Chat: chat, Text: "🚜 Трансфер"})
+
+				Convey("дежурный", func() {
+					mockTelebot.EXPECT().SendMessage(chat, "Расписание довольно большое, может только ближайшие рейсы показать?",
+						hasButtons("Ближайшие", "Все рейсы"))
+					bot.handleMessage(telebot.Message{Chat: chat, Text: "🏎 До Геологической"})
+
+					Convey("ближайшие", func() {
+						mockStorage.EXPECT().GetNextEventsByTypeAndSubtype("transfer", "main", gomock.Any(), time.Hour).Return([]konfurbot.Event{
+							konfurbot.Event{Type: "transfer", Subtype: "main", Short: "Куда-то вдаль", Start: &start},
+							konfurbot.Event{Type: "transfer", Subtype: "main", Short: "Куда-то вдаль 2", Start: &start},
+						})
+						mockTelebot.EXPECT().SendMessage(chat, "17:00: Куда-то вдаль\n17:00: Куда-то вдаль 2\n",
+							hasButtons("🌶 Еда", "🔥 Доклады / МК", "🍾 Развлечения", "🚜 Трансфер"))
+						bot.handleMessage(telebot.Message{Chat: chat, Text: "Ближайшие"})
+					})
+
+					Convey("все", func() {
+						mockStorage.EXPECT().GetEventsByTypeAndSubtype("transfer", "main").Return([]konfurbot.Event{
+							konfurbot.Event{Type: "transfer", Subtype: "main", Short: "Куда-то вдаль", Start: &start},
+							konfurbot.Event{Type: "transfer", Subtype: "main", Short: "Куда-то вдаль 2", Start: &start},
+						})
+						mockTelebot.EXPECT().SendMessage(chat, "17:00: Куда-то вдаль\n17:00: Куда-то вдаль 2\n",
+							hasButtons("🌶 Еда", "🔥 Доклады / МК", "🍾 Развлечения", "🚜 Трансфер"))
+						bot.handleMessage(telebot.Message{Chat: chat, Text: "Все рейсы"})
+					})
+
+					Convey("пользователь пишет нам ерунду", func() {
+						mockTelebot.EXPECT().SendMessage(chat, "Я не понимаю эту команду. Давай попробуем еще раз с начала.",
+							hasButtons("🌶 Еда", "🔥 Доклады / МК", "🍾 Развлечения", "🚜 Трансфер"))
+						bot.handleMessage(telebot.Message{Chat: chat, Text: "gibberish"})
+					})
+				})
+
+				Convey("цветные", func() {
+					mockTelebot.EXPECT().SendMessage(chat, "Расписание довольно большое, может только ближайшие рейсы показать?",
+						hasButtons("Ближайшие", "Все рейсы"))
+					bot.handleMessage(telebot.Message{Chat: chat, Text: "🚲 В другие районы"})
+
+					Convey("ближайшие", func() {
+						mockStorage.EXPECT().GetNextEventsByTypeAndSubtype("transfer", "color", gomock.Any(), time.Hour).Return([]konfurbot.Event{
+							konfurbot.Event{Type: "transfer", Subtype: "color", Short: "Куда-то вдаль", Start: &start},
+							konfurbot.Event{Type: "transfer", Subtype: "color", Short: "Куда-то вдаль 2", Start: &start},
+						})
+						mockTelebot.EXPECT().SendMessage(chat, "17:00: Куда-то вдаль\n17:00: Куда-то вдаль 2\n",
+							hasButtons("🌶 Еда", "🔥 Доклады / МК", "🍾 Развлечения", "🚜 Трансфер"))
+						bot.handleMessage(telebot.Message{Chat: chat, Text: "Ближайшие"})
+					})
+
+					Convey("все", func() {
+						mockStorage.EXPECT().GetEventsByTypeAndSubtype("transfer", "color").Return([]konfurbot.Event{
+							konfurbot.Event{Type: "transfer", Subtype: "color", Short: "Куда-то вдаль", Start: &start},
+							konfurbot.Event{Type: "transfer", Subtype: "color", Short: "Куда-то вдаль 2", Start: &start},
+						})
+						mockTelebot.EXPECT().SendMessage(chat, "17:00: Куда-то вдаль\n17:00: Куда-то вдаль 2\n",
+							hasButtons("🌶 Еда", "🔥 Доклады / МК", "🍾 Развлечения", "🚜 Трансфер"))
+						bot.handleMessage(telebot.Message{Chat: chat, Text: "Все рейсы"})
+					})
+
+					Convey("пользователь пишет нам ерунду", func() {
+						mockTelebot.EXPECT().SendMessage(chat, "Я не понимаю эту команду. Давай попробуем еще раз с начала.",
+							hasButtons("🌶 Еда", "🔥 Доклады / МК", "🍾 Развлечения", "🚜 Трансфер"))
+						bot.handleMessage(telebot.Message{Chat: chat, Text: "gibberish"})
+					})
+				})
+
+				Convey("пользователь пишет нам ерунду", func() {
+					mockTelebot.EXPECT().SendMessage(chat, "Я не понимаю эту команду. Давай попробуем еще раз с начала.",
+						hasButtons("🌶 Еда", "🔥 Доклады / МК", "🍾 Развлечения", "🚜 Трансфер"))
+					bot.handleMessage(telebot.Message{Chat: chat, Text: "gibberish"})
+				})
+			})
+
 			Convey("пользователь пишет нам ерунду", func() {
 				mockTelebot.EXPECT().SendMessage(chat, "Я не понимаю эту команду. Давай попробуем еще раз с начала.",
 					hasButtons("🌶 Еда", "🔥 Доклады / МК", "🍾 Развлечения", "🚜 Трансфер"))

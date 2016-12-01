@@ -29,15 +29,22 @@ const (
 	funDayCommand   = "🍼 Утром"
 	funNightCommand = "🍸 Вечером"
 
-	transferCommand = "🚜 Трансфер"
+	transferCommand      = "🚜 Трансфер"
+	transferMainCommand  = "🏎 До Геологической"
+	transferColorCommand = "🚲 В другие районы"
+	transferNextCommand  = "Ближайшие"
+	transferAllCommand   = "Все рейсы"
 
-	welcomeState  = "welcome"
-	startState    = "start"
-	talkState     = "talk"
-	talkNowState  = "talknow"
-	talkNextState = "talknext"
-	talkAllState  = "talkall"
-	funState      = "fun"
+	welcomeState       = "welcome"
+	startState         = "start"
+	talkState          = "talk"
+	talkNowState       = "talknow"
+	talkNextState      = "talknext"
+	talkAllState       = "talkall"
+	transferState      = "transfer"
+	transferMainState  = "transfermain"
+	transferColorState = "transfercolor"
+	funState           = "fun"
 )
 
 var stateMessageOptions = map[string]*telebot.SendOptions{
@@ -92,6 +99,33 @@ var stateMessageOptions = map[string]*telebot.SendOptions{
 		},
 	},
 
+	transferState: &telebot.SendOptions{
+		ReplyMarkup: telebot.ReplyMarkup{
+			CustomKeyboard: [][]string{
+				[]string{transferMainCommand, transferColorCommand},
+			},
+			ResizeKeyboard: true,
+		},
+	},
+
+	transferMainState: &telebot.SendOptions{
+		ReplyMarkup: telebot.ReplyMarkup{
+			CustomKeyboard: [][]string{
+				[]string{transferNextCommand, transferAllCommand},
+			},
+			ResizeKeyboard: true,
+		},
+	},
+
+	transferColorState: &telebot.SendOptions{
+		ReplyMarkup: telebot.ReplyMarkup{
+			CustomKeyboard: [][]string{
+				[]string{transferNextCommand, transferAllCommand},
+			},
+			ResizeKeyboard: true,
+		},
+	},
+
 	funState: &telebot.SendOptions{
 		ReplyMarkup: telebot.ReplyMarkup{
 			CustomKeyboard: [][]string{
@@ -117,13 +151,18 @@ func initStateMachine() *fsm.FSM {
 			{Name: talkAllCommand, Src: []string{talkState}, Dst: talkAllState},
 			{Name: talkTalkCommand, Src: []string{talkAllState}, Dst: startState},
 			{Name: talkMasterCommand, Src: []string{talkAllState}, Dst: startState},
+			{Name: transferCommand, Src: []string{startState}, Dst: transferState},
+			{Name: transferMainCommand, Src: []string{transferState}, Dst: transferMainState},
+			{Name: transferColorCommand, Src: []string{transferState}, Dst: transferColorState},
+			{Name: transferNextCommand, Src: []string{transferMainState, transferColorState}, Dst: startState},
+			{Name: transferAllCommand, Src: []string{transferMainState, transferColorState}, Dst: startState},
 			{Name: funCommand, Src: []string{startState}, Dst: funState},
 			{Name: funDayCommand, Src: []string{funState}, Dst: startState},
 			{Name: funNightCommand, Src: []string{funState}, Dst: startState},
 			{Name: returnToStartCommand, Src: []string{startState}, Dst: startState},
 			{
 				Name: unknownCommand,
-				Src:  []string{welcomeState, startState, talkState, talkNowState, talkNextState, talkAllState, funState},
+				Src:  []string{welcomeState, startState, talkState, talkNowState, talkNextState, talkAllState, transferState, transferMainState, transferColorState, funState},
 				Dst:  startState,
 			},
 		},
@@ -186,6 +225,40 @@ func initStateMachine() *fsm.FSM {
 				return bot.telebot.SendMessage(chat, "Полное расписание довольно длинное. Давай посмотрим отдельно, доклады или мастер-классы? С тизерами вообще не буду предлагать :)", stateMessageOptions[e.Dst])
 			}),
 
+			transferCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
+				return bot.telebot.SendMessage(chat, "Окей, куда поедем?", stateMessageOptions[e.Dst])
+			}),
+
+			transferMainCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
+				return bot.telebot.SendMessage(chat, "Расписание довольно большое, может только ближайшие рейсы показать?", stateMessageOptions[e.Dst])
+			}),
+
+			transferColorCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
+				return bot.telebot.SendMessage(chat, "Расписание довольно большое, может только ближайшие рейсы показать?", stateMessageOptions[e.Dst])
+			}),
+
+			transferNextCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
+				var events []konfurbot.Event
+				switch e.Src {
+				case transferMainState:
+					events = bot.ScheduleStorage.GetNextEventsByTypeAndSubtype("transfer", "main", time.Now().In(bot.Timezone), time.Hour)
+				case transferColorState:
+					events = bot.ScheduleStorage.GetNextEventsByTypeAndSubtype("transfer", "color", time.Now().In(bot.Timezone), time.Hour)
+				}
+				return bot.telebot.SendMessage(chat, makeResponseFromEvents(events, false), stateMessageOptions[e.Dst])
+			}),
+
+			transferAllCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
+				var events []konfurbot.Event
+				switch e.Src {
+				case transferMainState:
+					events = bot.ScheduleStorage.GetEventsByTypeAndSubtype("transfer", "main")
+				case transferColorState:
+					events = bot.ScheduleStorage.GetEventsByTypeAndSubtype("transfer", "color")
+				}
+				return bot.telebot.SendMessage(chat, makeResponseFromEvents(events, false), stateMessageOptions[e.Dst])
+			}),
+
 			funCommand: wrapCallback(func(e *fsm.Event, chat telebot.Chat, bot *Bot) error {
 				return bot.telebot.SendMessage(chat, "Утром или вечером?", stateMessageOptions[e.Dst])
 			}),
@@ -233,7 +306,10 @@ func makeResponseFromEvents(events []konfurbot.Event, long bool) string {
 		if eventStart == "" && eventFinish == "" {
 			response += "весь день"
 		} else {
-			response += fmt.Sprintf("%s — %s", eventStart, eventFinish)
+			response += eventStart
+			if eventFinish != "" {
+				response += " — " + eventFinish
+			}
 		}
 
 		if event.Venue != "" {
