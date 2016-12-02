@@ -76,7 +76,7 @@ func initStateMachine() *fsm.FSM {
 				case talkNowState:
 					events = bot.ScheduleStorage.GetCurrentEventsByType("talk", time.Now().In(bot.Timezone))
 				case talkNextState:
-					events = bot.ScheduleStorage.GetNextEventsByType("talk", time.Now().In(bot.Timezone), time.Hour)
+					events = bot.ScheduleStorage.GetNextEventsByType("talk", time.Now().In(bot.Timezone), 2*time.Hour)
 				}
 				return bot.telebot.SendMessage(chat, makeResponseFromEvents(events, true), makeMessageOptionsForState(e.Dst))
 			}),
@@ -87,7 +87,7 @@ func initStateMachine() *fsm.FSM {
 				case talkNowState:
 					events = bot.ScheduleStorage.GetCurrentEventsByType("talk", time.Now().In(bot.Timezone))
 				case talkNextState:
-					events = bot.ScheduleStorage.GetNextEventsByType("talk", time.Now().In(bot.Timezone), time.Hour)
+					events = bot.ScheduleStorage.GetNextEventsByType("talk", time.Now().In(bot.Timezone), 2*time.Hour)
 				}
 				return bot.telebot.SendMessage(chat, makeResponseFromEvents(events, false), makeMessageOptionsForState(e.Dst))
 			}),
@@ -115,7 +115,7 @@ func initStateMachine() *fsm.FSM {
 				case masterNowState:
 					events = bot.ScheduleStorage.GetCurrentEventsByType("master", time.Now().In(bot.Timezone))
 				case masterNextState:
-					events = bot.ScheduleStorage.GetNextEventsByType("master", time.Now().In(bot.Timezone), time.Hour)
+					events = bot.ScheduleStorage.GetNextEventsByType("master", time.Now().In(bot.Timezone), 2*time.Hour)
 				}
 				return bot.telebot.SendMessage(chat, makeResponseFromEvents(events, true), makeMessageOptionsForState(e.Dst))
 			}),
@@ -126,7 +126,7 @@ func initStateMachine() *fsm.FSM {
 				case masterNowState:
 					events = bot.ScheduleStorage.GetCurrentEventsByType("master", time.Now().In(bot.Timezone))
 				case masterNextState:
-					events = bot.ScheduleStorage.GetNextEventsByType("master", time.Now().In(bot.Timezone), time.Hour)
+					events = bot.ScheduleStorage.GetNextEventsByType("master", time.Now().In(bot.Timezone), 2*time.Hour)
 				}
 				return bot.telebot.SendMessage(chat, makeResponseFromEvents(events, false), makeMessageOptionsForState(e.Dst))
 			}),
@@ -152,9 +152,9 @@ func initStateMachine() *fsm.FSM {
 				var events []konfurbot.Event
 				switch e.Src {
 				case transferMainState:
-					events = bot.ScheduleStorage.GetNextEventsByType("transfer_main", time.Now().In(bot.Timezone), time.Hour)
+					events = bot.ScheduleStorage.GetNextEventsByType("transfer_main", time.Now().In(bot.Timezone), 2*time.Hour)
 				case transferColorState:
-					events = bot.ScheduleStorage.GetNextEventsByType("transfer_color", time.Now().In(bot.Timezone), time.Hour)
+					events = bot.ScheduleStorage.GetNextEventsByType("transfer_color", time.Now().In(bot.Timezone), 2*time.Hour)
 				}
 				return bot.telebot.SendMessage(chat, makeResponseFromEvents(events, false), makeMessageOptionsForState(e.Dst))
 			}),

@@ -134,7 +134,7 @@ func TestUserInteraction(t *testing.T) {
 					bot.handleMessage(telebot.Message{Chat: chat, Text: "🔜 Скоро"})
 
 					Convey("с тизерами", func() {
-						mockStorage.EXPECT().GetNextEventsByType("talk", gomock.Any(), time.Hour).Return([]konfurbot.Event{
+						mockStorage.EXPECT().GetNextEventsByType("talk", gomock.Any(), 2*time.Hour).Return([]konfurbot.Event{
 							konfurbot.Event{Type: "talk", Short: "WAT", Long: "WAAAAT", Start: &start, Finish: &finish},
 							konfurbot.Event{Type: "talk", Short: "WAT 2", Long: "WAAAAT 22", Start: &start, Finish: &finish},
 						})
@@ -144,7 +144,7 @@ func TestUserInteraction(t *testing.T) {
 					})
 
 					Convey("без тизеров", func() {
-						mockStorage.EXPECT().GetNextEventsByType("talk", gomock.Any(), time.Hour).Return([]konfurbot.Event{
+						mockStorage.EXPECT().GetNextEventsByType("talk", gomock.Any(), 2*time.Hour).Return([]konfurbot.Event{
 							konfurbot.Event{Type: "talk", Short: "WAT", Long: "WAAAAT", Start: &start, Finish: &finish},
 							konfurbot.Event{Type: "talk", Short: "WAT 2", Long: "WAAAAT 22", Start: &start, Finish: &finish},
 						})
@@ -243,7 +243,7 @@ func TestUserInteraction(t *testing.T) {
 					bot.handleMessage(telebot.Message{Chat: chat, Text: "⏭ Скоро"})
 
 					Convey("с тизерами", func() {
-						mockStorage.EXPECT().GetNextEventsByType("master", gomock.Any(), time.Hour).Return([]konfurbot.Event{
+						mockStorage.EXPECT().GetNextEventsByType("master", gomock.Any(), 2*time.Hour).Return([]konfurbot.Event{
 							konfurbot.Event{Type: "master", Short: "WAT", Long: "WAAAAT", Start: &start, Finish: &finish},
 							konfurbot.Event{Type: "master", Short: "WAT 2", Long: "WAAAAT 22", Start: &start, Finish: &finish},
 						})
@@ -253,7 +253,7 @@ func TestUserInteraction(t *testing.T) {
 					})
 
 					Convey("без тизеров", func() {
-						mockStorage.EXPECT().GetNextEventsByType("master", gomock.Any(), time.Hour).Return([]konfurbot.Event{
+						mockStorage.EXPECT().GetNextEventsByType("master", gomock.Any(), 2*time.Hour).Return([]konfurbot.Event{
 							konfurbot.Event{Type: "master", Short: "WAT", Long: "WAAAAT", Start: &start, Finish: &finish},
 							konfurbot.Event{Type: "master", Short: "WAT 2", Long: "WAAAAT 22", Start: &start, Finish: &finish},
 						})
@@ -343,7 +343,7 @@ func TestUserInteraction(t *testing.T) {
 					bot.handleMessage(telebot.Message{Chat: chat, Text: "🏎 Дежурный"})
 
 					Convey("ближайшие", func() {
-						mockStorage.EXPECT().GetNextEventsByType("transfer_main", gomock.Any(), time.Hour).Return([]konfurbot.Event{
+						mockStorage.EXPECT().GetNextEventsByType("transfer_main", gomock.Any(), 2*time.Hour).Return([]konfurbot.Event{
 							konfurbot.Event{Type: "transfer", Short: "Куда-то вдаль", Start: &start},
 							konfurbot.Event{Type: "transfer", Short: "Куда-то вдаль 2", Start: &start},
 						})
@@ -375,7 +375,7 @@ func TestUserInteraction(t *testing.T) {
 					bot.handleMessage(telebot.Message{Chat: chat, Text: "🚲 Цветные"})
 
 					Convey("ближайшие", func() {
-						mockStorage.EXPECT().GetNextEventsByType("transfer_color", gomock.Any(), time.Hour).Return([]konfurbot.Event{
+						mockStorage.EXPECT().GetNextEventsByType("transfer_color", gomock.Any(), 2*time.Hour).Return([]konfurbot.Event{
 							konfurbot.Event{Type: "transfer", Short: "Куда-то вдаль", Start: &start},
 							konfurbot.Event{Type: "transfer", Short: "Куда-то вдаль 2", Start: &start},
 						})
